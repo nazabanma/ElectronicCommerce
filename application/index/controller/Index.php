@@ -10,5 +10,8 @@ class Index
     public function index2()
     {
         return '456';
+        public function index()
+    {
+        return '123';
     }
 }
