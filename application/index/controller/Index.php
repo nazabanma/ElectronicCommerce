@@ -7,4 +7,8 @@ class Index
     {
         return '123';
     }
+        public function index()
+    {
+        return '123';
+    }
 }
