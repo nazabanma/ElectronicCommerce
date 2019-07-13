@@ -3,7 +3,7 @@ namespace app\api\model;
 
 use think\Model;
 
-class User extends Model
+class City extends Model
 { }
 
 ?>
