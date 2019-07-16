@@ -3,8 +3,5 @@ namespace app\api\model;
 
 use think\Model;
 
-class Adress extends Model
+class Address extends Model
 { }
-
-?>
-            
