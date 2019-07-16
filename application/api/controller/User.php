@@ -282,7 +282,7 @@ class User extends Controller
     /**
      * 根据请求创建订单
      *
-     * @param [type] $request
+     * @param String $request
      * @return 购买信息
      */
 
