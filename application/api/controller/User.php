@@ -12,9 +12,9 @@ use app\api\model\ViewBookDetail;
 use app\api\model\ViewBookEvaluate;
 use app\api\model\ViewMyAddress;
 use app\api\model\ViewShopCart;
+
 class User extends Controller
 {
-
 
 
     public function login(Request $request)
@@ -122,9 +122,9 @@ class User extends Controller
     }
 
 
-     /**
-     * Undocumented function
-     *根据type_id返回书本信息列表(0表示返回全部,其余则根据type_id返回)
+    /**
+     * 根据type_id返回书本信息列表(0表示返回全部,其余则根据type_id返回)K
+     *
      * @param [type] $type_id 
      * @return 书本数组
      */
@@ -141,9 +141,9 @@ class User extends Controller
         return json($list);
     }
 
-     /**
-     * Undocumented function
+    /**
      *根据书本id返回某本书信息
+     *
      * @param [type] $book_id 
      * @return 某本书数组
      */
@@ -156,9 +156,9 @@ class User extends Controller
     }
 
 
-     /**
-     * Undocumented function
-     *返回书本类型
+    /**
+     * 返回书本类型
+     *
      * @param  
      * @return 书本类型数组
      */
@@ -171,9 +171,9 @@ class User extends Controller
     }
 
 
-   /**
-     * Undocumented function
-     *根据用户id返回购物车列表
+    /**
+     * 根据用户id返回购物车列表
+     * 
      * @param [type] $user_id 
      * @return 购物车数组
      */
@@ -186,18 +186,20 @@ class User extends Controller
         return json($list);
     }
 
+
+
     /**
-     * Undocumented function
-     *根据书本id返回对应的评价
-     * @param [type] $book_id 
-     * @return 评价数组
+     * 根据书本id返回对应评价
+     *
+     * @param Sting $book_id
+     * @return json
      */
     public function evaluate_list($book_id)
     {
 
         $evaluate = new ViewBookEvaluate();
         $list = $evaluate->where('book_id', $book_id)->select();
-       
+
         $evaluate_list = [];     //评价数组
         $evaluate_item = [];     //评价数组的每个元素数组
         $comment_list = [];     //评价里的评论数组，作为评价数组的元素
@@ -209,7 +211,7 @@ class User extends Controller
         $evaluate_item['content'] = $list[0]['content'];
         $evaluate_item['time'] = $list[0]['evaluate_time'];
         $evaluate_item['order_item_id'] = $list[0]['order_item_id'];
-        $evaluate_item['like_count']=EvaluateLike::where('evaluate_id',$list[0]['evaluate_id'])->count();
+        $evaluate_item['like_count'] = EvaluateLike::where('evaluate_id', $list[0]['evaluate_id'])->count();
 
         for ($i = 1; $i < count($list); $i++) {
 
@@ -228,12 +230,12 @@ class User extends Controller
                     $evaluate_item['content'] = $list[$i]['content'];
                     $evaluate_item['time'] = $list[$i]['evaluate_time'];
                     $evaluate_item['order_item_id'] = $list[$i]['order_item_id'];
-                    $evaluate_item['like_count']=EvaluateLike::where('evaluate_id',$list[$i]['evaluate_id'])->count();
+                    $evaluate_item['like_count'] = EvaluateLike::where('evaluate_id', $list[$i]['evaluate_id'])->count();
                 }
                 $evaluate_item['comment'] = $comment_list;       //评价数组的元素中的评论数组
                 array_push($evaluate_list, $evaluate_item);    //向评价数组添加最新的评价元素
                 $comment_list = [];
-                
+
                 $count = 1;
             } else {
 
@@ -243,7 +245,7 @@ class User extends Controller
                     $evaluate_item['content'] = $list[$i]['content'];
                     $evaluate_item['time'] = $list[$i]['evaluate_time'];
                     $evaluate_item['order_item_id'] = $list[$i]['order_item_id'];
-                    $evaluate_item['like_count']=EvaluateLike::where('evaluate_id',$list[$i]['evaluate_id'])->count();
+                    $evaluate_item['like_count'] = EvaluateLike::where('evaluate_id', $list[$i]['evaluate_id'])->count();
                     $count++;
                 } else {                                          //如果是评论
 
@@ -262,42 +264,41 @@ class User extends Controller
         // return json($list);
     }
 
-     /**
-     * Undocumented function
-     *根据请求创建订单
+    /**
+     * 根据请求创建订单
+     *
      * @param [type] $request
      * @return 购买信息
      */
-    
+
     public function buy(Request $request)
     {
         $order_list = $request->param()['order_list'];
         $user_id = $request->param()['user_id'];
         $address_id = $request->param()['address_id'];
 
-        
-        $order=new Order();
-        $order->user_id=$user_id;
-        $order->address_id=$address_id;
-        $order->create_time=now();
-        $order->save();
-        $order_id=$order->id;
-       
-        foreach($order_list as $order_item)
-       {
-              $order_item=new OrderItem();
-          
-              $order_item->gid=$order_item['item_id'];
-              $order_item->count=$order_item['count'];
-              $order_item->book_id=$order_item['book_id'];
-              $order_item->order_id=$order_id;
-              $order_item->save();
-       }
 
-       return json([
-           "statusCode" => 200,
-           "msg" => "购买成功",
-           "order_id"=>  $order_id
-       ]);
+        $order = new Order();
+        $order->user_id = $user_id;
+        $order->address_id = $address_id;
+        $order->create_time = now();
+        $order->save();
+        $order_id = $order->id;
+
+        foreach ($order_list as $order_item) {
+            $order_item = new OrderItem();
+
+            $order_item->gid = $order_item['item_id'];
+            $order_item->count = $order_item['count'];
+            $order_item->book_id = $order_item['book_id'];
+            $order_item->order_id = $order_id;
+            $order_item->save();
+        }
+
+        return json([
+            "statusCode" => 200,
+            "msg" => "购买成功",
+            "order_id" =>  $order_id
+        ]);
     }
 }
