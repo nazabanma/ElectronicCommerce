@@ -173,7 +173,10 @@ class User extends Controller
 
         $book_type_list = BookType::all();
 
-        return json($book_type_list);
+        return json([
+            'code' => '200',
+            'data' => $book_type_list
+        ]);
     }
 
 
@@ -189,7 +192,10 @@ class User extends Controller
 
         $list = $cart->where('user_id', $user_id)->select();
 
-        return json($list);
+        return json([
+            'code' => '200',
+            'data' => $list
+        ]);
     }
 
 
@@ -265,7 +271,10 @@ class User extends Controller
         }
 
 
-        return json($evaluate_list);
+        return json([
+            'code' => '200',
+            'data' => $evaluate_list
+        ]);
         // $list = Evaluate::hasWhere('OrderItem', ['book_id' => $book_id])->with('order_item')->select();
         // return json($list);
     }
