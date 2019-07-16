@@ -163,7 +163,7 @@ class User extends Controller
      * @return 书本类型数组
      */
     public function book_type()
-    {sadaa
+    {
 
         $book_type_list = BookType::all();
 
