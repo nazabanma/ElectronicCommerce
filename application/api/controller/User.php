@@ -203,7 +203,7 @@ class User extends Controller
     /**
      * 根据书本id返回对应评价
      *
-     * @param String $book_id
+     * @param 11 $book_id
      * @return json
      */
     public function evaluate_list($book_id)
