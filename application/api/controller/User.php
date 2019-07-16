@@ -300,8 +300,17 @@ class User extends Controller
         $order->user_id = $user_id;
         $order->address_id = $address_id;
         $order->create_time = now();
-        $order->save();
-        $order_id = $order->id;
+        $result = $order->save();
+
+        if (!$result) {
+            return json([
+                'code' => 500,
+                'msg' => 'insert failed'
+            ]);
+        }
+
+        $order_id = $order->order_id;
+
 
         foreach ($order_list as $order_item) {
             $order_item = new OrderItem();
@@ -310,7 +319,14 @@ class User extends Controller
             $order_item->count = $order_item['count'];
             $order_item->book_id = $order_item['book_id'];
             $order_item->order_id = $order_id;
-            $order_item->save();
+            $result = $order_item->save();
+
+            if (!$result) {
+                return json([
+                    'code' => 500,
+                    'msg' => 'insert failed'
+                ]);
+            }
         }
 
         return json([
