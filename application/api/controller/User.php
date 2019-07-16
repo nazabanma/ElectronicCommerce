@@ -177,7 +177,6 @@ class User extends Controller
      * @param [type] $user_id 
      * @return 购物车数组
      */
-    
     public function shop_cart($user_id)
     {
         $cart = new ViewShopCart();
