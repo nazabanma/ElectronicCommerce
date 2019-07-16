@@ -138,7 +138,10 @@ class User extends Controller
             $list = $book->where('book_type_id', $type_id)->select();
         }
 
-        return json($list);
+        return json([
+            'code' => '200',
+            'data' => $list
+        ]);
     }
 
     /**
@@ -152,7 +155,10 @@ class User extends Controller
 
         $book = new ViewBookDetail();
         $book = $book->where('book_id', $book_id)->select();
-        return json($book);
+        return json([
+            'code' => '200',
+            'data' => $book
+        ]);
     }
 
 
