@@ -35,5 +35,9 @@ return [
         'book/:book_id'   => ['api/user/book', ['method' => 'get']],
         'bookType'   => ['api/user/bookType', ['method' => 'get']],
         'evaluateList/:book_id'   => ['api/user/evaluateList', ['method' => 'get']],
+        'orderCancle'   => ['api/index/orderCancel', ['method' => 'POST']],
+        'orderUpdate'   => ['api/user/orderUpdate', ['method' => 'POST']],
+        'orderDelete'   => ['api/user/orderDelete', ['method' => 'POST']],
+        'orderStateUpdate'   => ['api/user/orderStateUpdate', ['method' => 'POST']],
     ]
 ];
