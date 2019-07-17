@@ -15,6 +15,7 @@ use app\api\model\ViewBookDetail;
 use app\api\model\ViewBookEvaluate;
 use app\api\model\ViewMyAddress;
 use app\api\model\ViewShopCart;
+use app\api\model\Book;
 
 class User extends Controller
 {
@@ -131,7 +132,7 @@ class User extends Controller
      * @param [type] $type_id 
      * @return 书本数组
      */
-    public function book_list($type_id)
+    public function bookList($type_id)
     {
         $book = new ViewBookList();
         $list = '';
@@ -171,14 +172,14 @@ class User extends Controller
      * @param  
      * @return 书本类型数组
      */
-    public function book_type()
+    public function bookType()
     {
 
-        $book_type_list = BookType::all();
+        $bookTypeList = BookType::all();
 
         return json([
             'code' => '200',
-            'data' => $book_type_list
+            'data' => $bookTypeList
         ]);
     }
 
@@ -211,95 +212,73 @@ class User extends Controller
      */
     public function evaluate_list($book_id)
     {
-
         $evaluate = new ViewBookEvaluate();
-        $list = $evaluate->where('book_id', $book_id)->select();
-
-        $evaluate_list = [];     //评价数组
-        $evaluate_item = [];     //评价数组的每个元素数组
-        $comment_list = [];     //评价里的评论数组，作为评价数组的元素
-        $comment_item = [];    //评论数组的每个元素数组
-        $count = 0;             //用于判断是否是评价
-
-        $evaluate_item['id'] = $list[0]['evaluate_id'];          //先给评价数组的第一个元素赋值
-        $evaluate_item['name'] = $list[0]['nick_name'];
-        $evaluate_item['content'] = $list[0]['content'];
-        $evaluate_item['time'] = $list[0]['evaluate_time'];
-        $evaluate_item['order_item_id'] = $list[0]['order_item_id'];
-        $evaluate_item['like_count'] = EvaluateLike::where('evaluate_id', $list[0]['evaluate_id'])->count();
-
-        for ($i = 1; $i < count($list); $i++) {
-
-
-            if ($i + 1 == count($list) || $list[$i + 1]['order_item_id'] != $list[$i]['order_item_id']) {  //如果下一条是新的评价，则要向评价数组添加最新的评价元素
-
-                if ($list[$i - 1]['order_item_id'] == $list[$i]['order_item_id']) {    //判断该条是评价还是评论
-                    $comment_item['name'] = $list[$i]['nick_name'];
-                    $comment_item['content'] = $list[$i]['content'];
-                    $comment_item['time'] = $list[$i]['evaluate_time'];
-                    $comment_item['order_item_id'] = $list[$i]['order_item_id'];
-                    array_push($comment_list, $comment_item);
-                } else {
-                    $evaluate_item['id'] = $list[$i]['evaluate_id'];
-                    $evaluate_item['name'] = $list[$i]['nick_name'];
-                    $evaluate_item['content'] = $list[$i]['content'];
-                    $evaluate_item['time'] = $list[$i]['evaluate_time'];
-                    $evaluate_item['order_item_id'] = $list[$i]['order_item_id'];
-                    $evaluate_item['like_count'] = EvaluateLike::where('evaluate_id', $list[$i]['evaluate_id'])->count();
-                }
-                $evaluate_item['comment'] = $comment_list;       //评价数组的元素中的评论数组
-                array_push($evaluate_list, $evaluate_item);    //向评价数组添加最新的评价元素
-                $comment_list = [];
-
-                $count = 1;
-            } else {
-
-                if ($count == 1) {                                          //如果是评价
-                    $evaluate_item['id'] = $list[$i]['evaluate_id'];
-                    $evaluate_item['name'] = $list[$i]['nick_name'];
-                    $evaluate_item['content'] = $list[$i]['content'];
-                    $evaluate_item['time'] = $list[$i]['evaluate_time'];
-                    $evaluate_item['order_item_id'] = $list[$i]['order_item_id'];
-                    $evaluate_item['like_count'] = EvaluateLike::where('evaluate_id', $list[$i]['evaluate_id'])->count();
-                    $count++;
-                } else {                                          //如果是评论
-
-                    $comment_item['name'] = $list[$i]['nick_name'];
-                    $comment_item['content'] = $list[$i]['content'];
-                    $comment_item['time'] = $list[$i]['evaluate_time'];
-                    $comment_item['order_item_id'] = $list[$i]['order_item_id'];
-                    array_push($comment_list, $comment_item);
-                }
+        $evaluateList = $evaluate->where('book_id', $book_id)->select();
+        // 返回结果
+        $data = [];
+        // 对评价的评论的顺组
+        $comment = [];
+        $prev = -1;
+        foreach ($evaluateList as $evaluateItem) {
+            $temp = [
+                'id' => $evaluateItem['evaluate_id'],
+                'name' => $evaluateItem['nick_name'],
+                'content' => $evaluateItem['content'],
+                'time' => $evaluateItem['evaluate_time'],
+                'order_item_id' => $evaluateItem['order_item_id'],
+                'like_count' => EvaluateLike::where('evaluate_id', $evaluateItem['evaluate_id'])->count()
+            ];
+            if ($prev > 0 && $prev != $evaluateItem['order_item_id']) {
+                array_push($data, $this->getEvaluateItem($comment));
+                $comment = [];
             }
+            $comment[] = $temp;
+            $prev = $evaluateItem['order_item_id'];
         }
-
-
+        array_push($data, $this->getEvaluateItem($comment));
         return json([
             'code' => '200',
-            'data' => $evaluate_list
+            'data' => $data,
         ]);
-        // $list = Evaluate::hasWhere('OrderItem', ['book_id' => $book_id])->with('order_item')->select();
-        // return json($list);
     }
 
+    protected function getEvaluateItem($comment)
+    {
+        return [
+            'id' => $comment[0]['id'],
+            'name' => $comment[0]['name'],
+            'content' => $comment[0]['content'],
+            'time' => $comment[0]['time'],
+            'order_item_id' => $comment[0]['order_item_id'],
+            'like_count' => $comment[0]['like_count'],
+            'comment' => array_splice($comment, 1),
+        ];
+    }
+
+
+
     /**
-     * 根据请求创建订单
+     * 根据请求创建订单(待支付)
      *
      * @param String $request
      * @return 购买信息
      */
 
-    public function buy(Request $request)
+    public function createOrder(Request $request)
     {
-        $order_list = $request->param()['order_list'];
-        $user_id = $request->param()['user_id'];
-        $address_id = $request->param()['address_id'];
+        $orderList = $request->param()['order_list'];         //接收到的订单数组
+        $user_id = $request->param()['user_id'];                //用户id
+        $address_id = $request->param()['address_id'];           //地址id
+        $remark = $request->param()['remark'];           //订单备注
 
 
         $order = new Order();
         $order->user_id = $user_id;
         $order->address_id = $address_id;
+        $order->order_state_id = 0;                    //创建订单，此时订单状态为待支付
         $order->create_time = now();
+        $order->flag = 0;                                   //用户是否删除订单的标志，0表示用户在查看订单列表时不删除订单
+        $order->remark = $remark;
         $result = $order->save();
 
         if (!$result) {
@@ -312,14 +291,35 @@ class User extends Controller
         $order_id = $order->order_id;
 
 
-        foreach ($order_list as $order_item) {
-            $order_item = new OrderItem();
+        foreach ($orderList as $item) {                        //给订单添加物品
+            $book = new Book();                                                       //先要查此时的书本库存数量够不够，不够则返回库存不足
+            $book = $book->where('book_id', $item['book_id'])->select();
+            $count = $book->book_count - $item['count'];
 
-            $order_item->gid = $order_item['item_id'];
-            $order_item->count = $order_item['count'];
-            $order_item->book_id = $order_item['book_id'];
-            $order_item->order_id = $order_id;
-            $result = $order_item->save();
+            if ($count < 0) {
+                return json([
+                    'code' => 401,
+                    'msg' => $book->book_name . '库存不足'
+                ]);
+            }
+
+            $book->book_count = $count;           //更改库存数量
+            $result = $book->save();
+
+            if (!$result) {
+                return json([
+                    'code' => 500,
+                    'msg' => 'update failed'
+                ]);
+            }
+
+            $orderItem = new OrderItem();             //创建订单里的物品信息
+
+            $orderItem->count = $item['count'];
+            $orderItem->book_id = $item['book_id'];
+            $orderItem->price = $item['price'];
+            $orderItem->order_id = $order_id;
+            $result = $orderItem->save();
 
             if (!$result) {
                 return json([
@@ -331,8 +331,141 @@ class User extends Controller
 
         return json([
             "statusCode" => 200,
-            "msg" => "购买成功",
-            "order_id" =>  $order_id
+            "msg" => "创建订单成功",
+            "order_id" =>  $order_id                //返回订单id
+        ]);
+    }
+    /**
+     * 修改订单地址信息(要在发货前修改)
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function orderUpdate(Request $request)
+    {
+        $order_id = $request->param()['order_id'];                   //订单id
+        $address_id = $request->param()['address_id'];         //用户修改的地址id
+
+        $order = new Order();
+        $order = $order->where('order_id', $order_id)->select();
+
+        if ($order->isEmpty())
+
+            return json([
+                'code' => '401',
+                'msg' => '订单不存在'
+            ]);
+
+        if ($order->order_state_id != 1)
+
+            return json([
+                'code' => '401',
+                'msg' => '订单不是待发货状态，无法修改'
+            ]);
+
+        $order->address_id = $address_id;
+
+        $result = $order->save();
+
+
+        if (!$result) {
+            return json([
+                'code' => 500,
+                'msg' => 'update failed'
+            ]);
+        }
+
+
+        return json([
+            "statusCode" => 200,
+            "msg" => "修改订单成功",
+        ]);
+    }
+
+
+
+
+
+    /**
+     * 修改订单状态（用户确认收货，商家发货）
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function orderStateUpdate(Request $request)
+    {
+        $order_id = $request->param()['order_id'];
+        $order_state_id = $request->param()['order_state_id'];
+
+        $order = new Order();
+        $order = $order->where('order_id', $order_id)->select();
+
+        if ($order->isEmpty())
+
+            return json([
+                'code' => '401',
+                'msg' => '订单不存在'
+            ]);
+
+        $order->order_state_id = $order_state_id;
+
+        $result = $order->save();
+
+        if (!$result) {
+            return json([
+                'code' => 500,
+                'msg' => 'update failed'
+            ]);
+        }
+
+
+        return json([
+            "statusCode" => 200,
+            "msg" => "修改订单状态成功",
+        ]);
+    }
+
+
+   
+
+    /**
+     * 用户查看订单列表删除订单
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function order_delete(Request $request)
+    {
+        $order_id = $request->param()['order_id'];   //用户删除的订单id
+
+        $order = new Order();
+        $order = $order->where('order_id', $order_id)->select();
+
+        if ($order->isEmpty())
+
+            return json([
+                'code' => '401',
+                'msg' => '订单不存在'
+            ]);
+
+
+
+        $order->flag = 1;           //1表示用户删除订单，商家仍然可看见订单
+
+        $result = $order->save();
+
+
+        if (!$result) {
+            return json([
+                'code' => 500,
+                'msg' => 'update failed'
+            ]);
+        }
+
+
+        return json([
+            "statusCode" => 200,
+            "msg" => "修改订单状态成功",
         ]);
     }
 }
