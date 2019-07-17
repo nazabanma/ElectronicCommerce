@@ -408,24 +408,17 @@ class User extends Controller
         $order->address_id = $address_id;
 
         $result = $order->save();
-
-
         if (!$result) {
             return json([
                 'code'  => 500,
                 'msg'   => 'update failed'
             ]);
         }
-
-
         return json([
             "statusCode"    => 200,
             "msg"           => "修改订单成功",
         ]);
     }
-
-
-
 
 
     /**
@@ -452,7 +445,6 @@ class User extends Controller
         $order->order_state_id = $order_state_id;
 
         $result = $order->save();
-
         if (!$result) {
             return json([
                 'code'  => 500,
