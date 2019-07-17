@@ -16,6 +16,7 @@ use app\api\model\ViewBookEvaluate;
 use app\api\model\ViewMyAddress;
 use app\api\model\ViewShopCart;
 use app\api\model\Book;
+use think\Config;
 
 class User extends Controller
 {
@@ -50,10 +51,16 @@ class User extends Controller
      * 查询所有收藏
      *
      * @param String $user_id 用户user_id
-     * @return json
+     * @return json 收藏列表
      */
     public function myCollect($user_id)
     {
+        if (empty($user_id)) {
+            return json([
+                'code' => '404',
+                'msg' => 'user_id is null'
+            ]);
+        }
         $Collect = new ViewMyCollect();
         $data = $Collect->where('user_id', $user_id)->select();
         return json([
@@ -66,10 +73,16 @@ class User extends Controller
      * 查询所有订单
      *
      * @param String $user_id
-     * @return json
+     * @return json 订单信息
      */
     public function myOrder($user_id)
     {
+        if (empty($user_id)) {
+            return json([
+                'code' => '404',
+                'msg' => 'user_id is null'
+            ]);
+        }
         $Order = new ViewMyOrder();
         $data = $Order->where('user_id', $user_id)->select();
         return json([
@@ -82,10 +95,16 @@ class User extends Controller
      * 查询所有地址
      *
      * @param String $user_id
-     * @return json
+     * @return json 收货地址列表
      */
     public function myAddress($user_id)
     {
+        if (empty($user_id)) {
+            return json([
+                'code' => '404',
+                'msg' => 'user_id is null'
+            ]);
+        }
         $Address = new ViewMyAddress();
         $data = $Address->where('user_id', $user_id)->select();
         return json([
@@ -94,6 +113,12 @@ class User extends Controller
         ]);
     }
 
+    /**
+     * 编辑收货地址
+     *
+     * @param Request $request
+     * @return json 编辑结果
+     */
     public function editAddress(Request $request)
     {
         $address_id = $request->param('address_id');
@@ -127,15 +152,15 @@ class User extends Controller
 
 
     /**
-     * 根据type_id返回书本信息列表(0表示返回全部,其余则根据type_id返回)K
+     * 根据type_id返回书本信息列表(0表示返回全部,其余则根据type_id返回)
      *
-     * @param [type] $type_id 
-     * @return 书本数组
+     * @param String $type_id 
+     * @return json 书本数组
      */
     public function bookList($type_id)
     {
         $book = new ViewBookList();
-        $list = '';
+        $list = [];
         if ($type_id == '0') {
             $list = $book->select();
         } else {
@@ -151,12 +176,17 @@ class User extends Controller
     /**
      *根据书本id返回某本书信息
      *
-     * @param [type] $book_id 
-     * @return 某本书数组
+     * @param String $book_id 
+     * @return json 书籍信息数组
      */
     public function book($book_id)
     {
-
+        if (empty($book_id)) {
+            return json([
+                'code' => 404,
+                'msg' => 'id is null'
+            ]);
+        }
         $book = new ViewBookDetail();
         $book = $book->where('book_id', $book_id)->select();
         return json([
@@ -174,7 +204,7 @@ class User extends Controller
      */
     public function bookType()
     {
-        $bookTypeList = BookType::all();
+        $bookTypeList = Config::load('config.php')['book_type'];
         return json([
             'code' => '200',
             'data' => $bookTypeList
@@ -205,7 +235,6 @@ class User extends Controller
     }
 
 
-
     /**
      * 根据书本id返回对应评价
      *
@@ -214,12 +243,19 @@ class User extends Controller
      */
     public function evaluateList($book_id)
     {
+        if (empty($book_id)) {
+            return json([
+                'code' => '404',
+                'msg' => 'book_id is null'
+            ]);
+        }
         $evaluate = new ViewBookEvaluate();
         $evaluateList = $evaluate->where('book_id', $book_id)->select();
         // 返回结果
         $data = [];
         // 对评价的评论的顺组
         $comment = [];
+        //不能直接等于evaluateList[0]['order_item_id'],否则若数组为空则报错
         $prev = -1;
         foreach ($evaluateList as $evaluateItem) {
             $temp = [
@@ -234,6 +270,7 @@ class User extends Controller
                 array_push($data, $this->getEvaluateItem($comment));
                 $comment = [];
             }
+            //相当于array_push
             $comment[] = $temp;
             $prev = $evaluateItem['order_item_id'];
         }
@@ -244,7 +281,7 @@ class User extends Controller
         ]);
     }
     /**
-     * 获得一个订单项的所有评价评论
+     * 获得一个订单项的评价及评论
      *
      * @param array $comment 该订单项下的所有评价
      * @return array
@@ -270,76 +307,74 @@ class User extends Controller
      * @param String $request
      * @return 购买信息
      */
-
     public function createOrder(Request $request)
     {
-        $orderList = $request->param()['order_list'];         //接收到的订单数组
+        $orderList = $request->param()['order_list'];           //接收到的订单数组
         $user_id = $request->param()['user_id'];                //用户id
-        $address_id = $request->param()['address_id'];           //地址id
-        $remark = $request->param()['remark'];           //订单备注
+        $address_id = $request->param()['address_id'];          //地址id
+        $remark = $request->param()['remark'];                  //订单备注
 
-
-        $order = new Order();
-        $order->user_id = $user_id;
-        $order->address_id = $address_id;
-        $order->order_state_id = 0;                    //创建订单，此时订单状态为待支付
-        $order->create_time = now();
-        $order->flag = 0;                                   //用户是否删除订单的标志，0表示用户在查看订单列表时不删除订单
-        $order->remark = $remark;
+        //创建订单，此时订单状态为待支付
+        $order = new Order([
+            'user_id'           => $user_id,
+            'address_id'        => $address_id,
+            'order_state_id'    => 0,
+            'create_time'       => now(),
+            //用户是否删除订单的标志，0表示用户在查看订单列表时不删除订单
+            'flag'              => 0,
+            'remark'            => $remark,
+        ]);
         $result = $order->save();
-
         if (!$result) {
             return json([
-                'code' => 500,
-                'msg' => 'insert failed'
+                'code'  => 500,
+                'msg'   => 'insert failed'
             ]);
         }
-
         $order_id = $order->order_id;
-
-
-        foreach ($orderList as $item) {                        //给订单添加物品
-            $book = new Book();                                                       //先要查此时的书本库存数量够不够，不够则返回库存不足
+        foreach ($orderList as $item) {
+            //给订单添加物品
+            $book = new Book();       //先要查此时的书本库存数量够不够，不够则返回库存不足
             $book = $book->where('book_id', $item['book_id'])->select();
             $count = $book->book_count - $item['count'];
 
             if ($count < 0) {
                 return json([
-                    'code' => 401,
-                    'msg' => $book->book_name . '库存不足'
+                    'code'  => 401,
+                    'msg'   => $book->book_name . '库存不足'
                 ]);
             }
-
-            $book->book_count = $count;           //更改库存数量
+            $book->book_count = $count; //更改库存数量
             $result = $book->save();
 
             if (!$result) {
                 return json([
-                    'code' => 500,
-                    'msg' => 'update failed'
+                    'code'  => 500,
+                    'msg'   => 'update failed'
                 ]);
             }
+            //创建订单里的物品信息
+            $orderItem = new OrderItem([
+                'count'     => $item['count'],
+                'book_id'   => $item['book_id'],
+                'price'     => $item['price'],
+                'order_id'  => $order_id,
+            ]);
 
-            $orderItem = new OrderItem();             //创建订单里的物品信息
-
-            $orderItem->count = $item['count'];
-            $orderItem->book_id = $item['book_id'];
-            $orderItem->price = $item['price'];
-            $orderItem->order_id = $order_id;
             $result = $orderItem->save();
 
             if (!$result) {
                 return json([
-                    'code' => 500,
-                    'msg' => 'insert failed'
+                    'code'  => 500,
+                    'msg'   => 'insert failed'
                 ]);
             }
         }
 
         return json([
-            "statusCode" => 200,
-            "msg" => "创建订单成功",
-            "order_id" =>  $order_id                //返回订单id
+            "statusCode"    => 200,
+            "msg"           => "创建订单成功",
+            "order_id"      =>  $order_id                //返回订单id
         ]);
     }
     /**
@@ -359,15 +394,15 @@ class User extends Controller
         if ($order->isEmpty())
 
             return json([
-                'code' => '401',
-                'msg' => '订单不存在'
+                'code'  => '401',
+                'msg'   => '订单不存在'
             ]);
 
         if ($order->order_state_id != 1)
 
             return json([
-                'code' => '401',
-                'msg' => '订单不是待发货状态，无法修改'
+                'code'  => '401',
+                'msg'   => '订单不是待发货状态，无法修改'
             ]);
 
         $order->address_id = $address_id;
@@ -377,15 +412,15 @@ class User extends Controller
 
         if (!$result) {
             return json([
-                'code' => 500,
-                'msg' => 'update failed'
+                'code'  => 500,
+                'msg'   => 'update failed'
             ]);
         }
 
 
         return json([
-            "statusCode" => 200,
-            "msg" => "修改订单成功",
+            "statusCode"    => 200,
+            "msg"           => "修改订单成功",
         ]);
     }
 
@@ -410,8 +445,8 @@ class User extends Controller
         if ($order->isEmpty())
 
             return json([
-                'code' => '401',
-                'msg' => '订单不存在'
+                'code'  => '401',
+                'msg'   => '订单不存在'
             ]);
 
         $order->order_state_id = $order_state_id;
@@ -420,15 +455,15 @@ class User extends Controller
 
         if (!$result) {
             return json([
-                'code' => 500,
-                'msg' => 'update failed'
+                'code'  => 500,
+                'msg'   => 'update failed'
             ]);
         }
 
 
         return json([
-            "statusCode" => 200,
-            "msg" => "修改订单状态成功",
+            "statusCode"    => 200,
+            "msg"           => "修改订单状态成功",
         ]);
     }
 
@@ -451,8 +486,8 @@ class User extends Controller
         if ($order->isEmpty())
 
             return json([
-                'code' => '401',
-                'msg' => '订单不存在'
+                'code'  => '401',
+                'msg'   => '订单不存在'
             ]);
 
 
@@ -464,15 +499,15 @@ class User extends Controller
 
         if (!$result) {
             return json([
-                'code' => 500,
-                'msg' => 'update failed'
+                'code'  => 500,
+                'msg'   => 'update failed'
             ]);
         }
 
 
         return json([
-            "statusCode" => 200,
-            "msg" => "修改订单状态成功",
+            "statusCode"    => 200,
+            "msg"           => "修改订单状态成功",
         ]);
     }
 }

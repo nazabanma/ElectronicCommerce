@@ -30,10 +30,10 @@ return [
         'order'         => ['api/user/myOrder', ['method' => 'get']],
         'address'       => ['api/user/myAddress', ['method' => 'get']],
         'editAddress'   => ['api/user/editAddress', ['method' => 'POST']],
-        'shop_cart/:user_id'=> ['api/user/shopCart', ['method' => 'get']],
-        'book_list/:type_id'   => ['api/user/bookList', ['method' => 'get']],
+        'shopCart/:user_id'=> ['api/user/shopCart', ['method' => 'get']],
+        'bookList/:type_id'   => ['api/user/bookList', ['method' => 'get']],
         'book/:book_id'   => ['api/user/book', ['method' => 'get']],
-        'book_type'   => ['api/user/bookType', ['method' => 'get']],
-        'evaluate_list/:book_id'   => ['api/user/evaluateList', ['method' => 'get']],
+        'bookType'   => ['api/user/bookType', ['method' => 'get']],
+        'evaluateList/:book_id'   => ['api/user/evaluateList', ['method' => 'get']],
     ]
 ];
