@@ -9,6 +9,8 @@ use app\api\model\BookType;
 use app\api\model\Order;
 use app\api\model\OrderItem;
 use app\api\model\EvaluateLike;
+use app\api\model\Collect;
+use app\api\model\ShopCart;
 use app\api\model\ViewMyCollect;
 use app\api\model\ViewMyOrder;
 use app\api\model\ViewBookList;
@@ -731,4 +733,64 @@ class User extends Controller
             ]);
         }
     }
+
+      /**
+     * 添加书本到收藏夹
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function collectAdd(Request $request)
+    {
+        $book_id = $request->param()['book_id'];   //用户收藏的书本id
+        $user_id = $request->param()['user_id'];   //用户id
+
+
+        if (empty($user_id) || empty($book_id))
+
+            return json([
+                'code'  => '401',
+                'msg'   => '请求参数有误'
+            ]);
+
+        $collect = new Collect();
+
+        $oldCollect =  $collect       //首先查询购物车是否有该物品               
+                    ->where('user_id', $user_id)
+                    ->where('book_id', $book_id)
+                    ->find();
+
+        //如果不是空的，则存在购物车的该物品数量加1
+        if (!empty($oldCollect)) {
+                return json([
+                    'code'  => 401,
+                    'msg'   => '已收藏过'
+                ]);
+            
+        }
+        //如果是空的，则直接添加到购物车
+        else {
+            $collect = new Collect([
+                'user_id'       => $user_id,
+                'book_id'       => $book_id,
+                'create_time'   => date("Y-m-d H:i:s"),
+            ]);
+
+            $result = $collect->save();
+        }
+
+        if ($result===false) {
+            return json([
+                'code'  => 500,
+                'msg'   => 'insert failed'
+            ]);
+        }
+
+
+        return json([
+            "statusCode"    => 200,
+            "msg"           => "添加成功",
+        ]);
+    }
+
 }
