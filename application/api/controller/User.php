@@ -320,13 +320,13 @@ class User extends Controller
             'user_id'           => $user_id,
             'address_id'        => $address_id,
             'order_state_id'    => 0,
-            'create_time'       => now(),
+            'create_time'       => date("Y-m-d H:i:s"),
             //用户是否删除订单的标志，0表示用户在查看订单列表时不删除订单
             'flag'              => 0,
             'remark'            => $remark,
         ]);
         $result = $order->save();
-        if (!$result) {
+        if ($result===false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'insert failed'
@@ -348,7 +348,7 @@ class User extends Controller
             $book->book_count = $count; //更改库存数量
             $result = $book->save();
 
-            if (!$result) {
+            if ($result===false) {
                 return json([
                     'code'  => 500,
                     'msg'   => 'update failed'
@@ -364,7 +364,7 @@ class User extends Controller
 
             $result = $orderItem->save();
 
-            if (!$result) {
+            if ($result===false) {
                 return json([
                     'code'  => 500,
                     'msg'   => 'insert failed'
@@ -410,7 +410,7 @@ class User extends Controller
         $order->address_id = $address_id;
 
         $result = $order->save();
-        if (!$result) {
+        if ($result===false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'update failed'
@@ -447,7 +447,7 @@ class User extends Controller
         $order->order_state_id = $order_state_id;
 
         $result = $order->save();
-        if (!$result) {
+        if ($result===false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'update failed'
@@ -491,7 +491,7 @@ class User extends Controller
         $result = $order->save();
 
 
-        if (!$result) {
+        if ($result===false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'update failed'
@@ -530,7 +530,7 @@ class User extends Controller
         $result = $order->save();
 
 
-        if (!$result) {
+        if ($result===false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'update failed'
@@ -550,7 +550,7 @@ class User extends Controller
 
             $result = $book->save();
 
-            if (!$result) {
+            if ($result===false) {
                 return json([
                     'code'  => 500,
                     'msg'   => 'update failed'
@@ -562,5 +562,173 @@ class User extends Controller
             'code'  => 200,
             'msg'   => '取消成功'
         ]);
+    }
+
+
+     /**
+     * 添加书本到购物车
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cartAdd(Request $request)
+    {
+        $book_id = $request->param()['book_id'];   //用户收藏的书本id
+        $user_id = $request->param()['user_id'];   //用户id
+
+
+        if (empty($user_id) || empty($user_id))
+
+            return json([
+                'code'  => '401',
+                'msg'   => '请求参数有误'
+            ]);
+
+        $shopCart = new ShopCart();
+
+        $oldCart =  $shopCart       //首先查询购物车是否有该物品               
+                    ->where('user_id', $user_id)
+                    ->where('book_id', $book_id)
+                    ->find();
+
+        //如果不是空的，则存在购物车的该物品数量加1
+        if (!empty($oldCart)) {
+            $oldCart->count++;
+
+            $result = $oldCart->save();
+        }
+        //如果是空的，则直接添加到购物车
+        else {
+            $cart = new ShopCart([
+                'user_id'       => $user_id,
+                'book_id'       => $book_id,
+                'create_time'   => date("Y-m-d H:i:s"),
+                'count'         => 1
+            ]);
+
+            $result = $cart->save();
+        }
+
+        if ($result===false) {
+            return json([
+                'code'  => 500,
+                'msg'   => 'update failed'
+            ]);
+        }
+
+
+        return json([
+            "statusCode"    => 200,
+            "msg"           => "添加成功",
+        ]);
+    }
+
+    /**
+     * 删除购物车的某个物品
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cartDelete(Request $request)
+    {
+        $book_id = $request->param()['book_id'];   //用户收藏的书本id
+        $user_id = $request->param()['user_id'];   //用户id
+
+
+        if (empty($user_id) || empty($user_id))
+
+            return json([
+                'code'  => '401',
+                'msg'   => '请求参数有误'
+            ]);
+
+        $shopCart = new ShopCart();
+
+        $oldCart =  $shopCart       //首先查询购物车是否有该物品               
+            ->where('user_id', $user_id)
+            ->where('book_id', $book_id)
+            ->find();
+
+        //如果不是空的，则删除
+        if (!empty($oldCart)) {
+
+            $result = $oldCart->delete();
+
+            if ($result===false) {
+                return json([
+                    'code'  => 500,
+                    'msg'   => 'delete failed'
+                ]);
+            }
+
+            return json([
+                "statusCode"    => 200,
+                "msg"           => "删除成功",
+            ]);
+        }
+        //如果是空的
+        else {
+            return json([
+                'code'  => 401,
+                'msg'   => '不存在该物品'
+            ]);
+        }
+    }
+
+
+
+    /**
+     * 更新购物车的书本信息
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function cartUpdate(Request $request)
+    {
+        $book_id = $request->param()['book_id'];   //用户收藏的书本id
+        $user_id = $request->param()['user_id'];   //用户id
+        $count = $request->param()['count'];   //数量
+
+
+        if (empty($user_id) || empty($user_id))
+
+            return json([
+                'code'  => '401',
+                'msg'   => '请求参数有误'
+            ]);
+
+        $shopCart = new ShopCart();
+
+        $oldCart =  $shopCart       //首先查询购物车是否有该物品               
+            ->where('user_id', $user_id)
+            ->where('book_id', $book_id)
+            ->find();
+
+        //如果不是空的，则添加数量
+        if (!empty($oldCart)) {
+            $oldCart->count = $count;
+
+            $result = $oldCart->save();
+
+            if ($result===false) {
+                return json([
+                    'code'  => 500,
+                    'msg'   => 'update failed'
+                ]);
+            }
+
+
+            return json([
+                "statusCode"    => 200,
+                "msg"           => "更新成功",
+            ]);
+        }
+        //如果是空的
+        else {
+            return json([
+                'code'  => 401,
+                'msg'   => '不存在该物品'
+            ]);
+        }
     }
 }

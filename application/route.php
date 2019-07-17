@@ -39,5 +39,8 @@ return [
         'orderUpdate'   => ['api/user/orderUpdate', ['method' => 'POST']],
         'orderDelete'   => ['api/user/orderDelete', ['method' => 'POST']],
         'orderStateUpdate'   => ['api/user/orderStateUpdate', ['method' => 'POST']],
+        'cartAdd'   => ['api/user/cartAdd', ['method' => 'POST']],
+        'cartDelete'   => ['api/user/cartDelete', ['method' => 'POST']],
+        'cartUpdate'   => ['api/user/cartUpdate', ['method' => 'POST']],
     ]
 ];
