@@ -579,7 +579,7 @@ class User extends Controller
         $user_id = $request->param()['user_id'];   //用户id
 
 
-        if (empty($user_id) || empty($user_id))
+        if (empty($user_id) || empty($book_id))
 
             return json([
                 'code'  => '401',
@@ -625,56 +625,77 @@ class User extends Controller
         ]);
     }
 
-    /**
-     * 删除购物车的某个物品
+   /**
+     * 删除购物车的物品
      *
      * @param Request $request
      * @return void
      */
     public function cartDelete(Request $request)
     {
-        $book_id = $request->param()['book_id'];   //用户收藏的书本id
+        $bookList = $request->param()['book_list'];   //用户选择的所有书本
         $user_id = $request->param()['user_id'];   //用户id
+        $ifAll = $request->param()['if_all'];   //是否全部删除
+
+        $shopCart = new ShopCart();
+        $oldCart = $shopCart->where('user_id', $user_id);
 
 
-        if (empty($user_id) || empty($user_id))
+        if ($ifAll == '1') {
+
+            $result = $oldCart->delete();
+
+            if ($result === false) {
+                return json([
+                    'code'  => 500,
+                    'msg'   => 'delete failed'
+                ]);
+            } else {
+                return json([
+                    "statusCode"    => 200,
+                    "msg"           => "删除成功",
+                ]);
+            }
+        }
+
+
+        if (empty($user_id) || empty($bookList))
 
             return json([
                 'code'  => '401',
                 'msg'   => '请求参数有误'
             ]);
 
-        $shopCart = new ShopCart();
+        //遍历书本数组
+        foreach ($bookList as $item) {
+            //查找购物车的书本
+            $oldItem = $oldCart->where('book_id', $item['book_id'])->find();
 
-        $oldCart =  $shopCart       //首先查询购物车是否有该物品               
-            ->where('user_id', $user_id)
-            ->where('book_id', $book_id)
-            ->find();
+            //如果不是空的，则删除
+            if (!empty($oldItem)) {
 
-        //如果不是空的，则删除
-        if (!empty($oldCart)) {
+                $result = $oldItem->delete();
 
-            $result = $oldCart->delete();
-
-            if ($result===false) {
+                if ($result === false) {
+                    return json([
+                        'code'  => 500,
+                        'msg'   => 'delete failed'
+                    ]);
+                }
+            }
+            //如果是空的，提示不存在
+            else {
                 return json([
-                    'code'  => 500,
-                    'msg'   => 'delete failed'
+                    'code'  => 401,
+                    'msg'   => '不存在该物品'
                 ]);
             }
+        }
 
-            return json([
-                "statusCode"    => 200,
-                "msg"           => "删除成功",
-            ]);
-        }
-        //如果是空的
-        else {
-            return json([
-                'code'  => 401,
-                'msg'   => '不存在该物品'
-            ]);
-        }
+        return json([
+            "statusCode"    => 200,
+            "msg"           => "删除成功",
+        ]);
     }
 
 
@@ -790,6 +811,78 @@ class User extends Controller
         return json([
             "statusCode"    => 200,
             "msg"           => "添加成功",
+        ]);
+    }
+
+     /**
+     * 删除收藏夹的物品
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function collectDelete(Request $request)
+    {
+        $bookList = $request->param()['book_list'];   //用户选择的所有书本
+        $user_id = $request->param()['user_id'];   //用户id
+        $ifAll = $request->param()['if_all'];   //是否全部删除
+
+        $collect = new Collect();
+        $oldCollect = $collect->where('user_id', $user_id);
+
+        if ($ifAll == '1') {
+
+            $result = $oldCollect->delete();
+
+            if ($result === false) {
+                return json([
+                    'code'  => 500,
+                    'msg'   => 'delete failed'
+                ]);
+            } else {
+                return json([
+                    "statusCode"    => 200,
+                    "msg"           => "删除成功",
+                ]);
+            }
+        }
+
+
+        if (empty($user_id) || empty($bookList))
+
+            return json([
+                'code'  => '401',
+                'msg'   => '请求参数有误'
+            ]);
+
+        //遍历书本数组
+        foreach ($bookList as $item) {
+            //查找收藏夹的书本
+            $oldItem = $oldCollect->where('book_id', $item['book_id'])->find();
+
+            //如果不是空的，则删除
+            if (!empty($oldItem)) {
+
+                $result = $oldItem->delete();
+
+                if ($result === false) {
+                    return json([
+                        'code'  => 500,
+                        'msg'   => 'delete failed'
+                    ]);
+                }
+            }
+            //如果是空的，提示不存在
+            else {
+                return json([
+                    'code'  => 401,
+                    'msg'   => '不存在该物品'
+                ]);
+            }
+        }
+
+        return json([
+            "statusCode"    => 200,
+            "msg"           => "删除成功",
         ]);
     }
 

@@ -43,5 +43,6 @@ return [
         'cartDelete'   => ['api/user/cartDelete', ['method' => 'POST']],
         'cartUpdate'   => ['api/user/cartUpdate', ['method' => 'POST']],
         'collectAdd'   => ['api/user/collectAdd', ['method' => 'POST']],
+        'collectDelete'   => ['api/user/collectDelete', ['method' => 'POST']],
     ]
 ];
