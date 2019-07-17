@@ -174,9 +174,7 @@ class User extends Controller
      */
     public function bookType()
     {
-
         $bookTypeList = BookType::all();
-
         return json([
             'code' => '200',
             'data' => $bookTypeList
@@ -187,15 +185,19 @@ class User extends Controller
     /**
      * 根据用户id返回购物车列表
      * 
-     * @param [type] $user_id 
+     * @param String $user_id 
      * @return 购物车数组
      */
-    public function shop_cart($user_id)
+    public function shopCart($user_id)
     {
+        if (empty($user_id)) {
+            return json([
+                'code' => '404',
+                'msg' => 'user_id is null'
+            ]);
+        }
         $cart = new ViewShopCart();
-
         $list = $cart->where('user_id', $user_id)->select();
-
         return json([
             'code' => '200',
             'data' => $list
@@ -210,7 +212,7 @@ class User extends Controller
      * @param String $book_id
      * @return json
      */
-    public function evaluate_list($book_id)
+    public function evaluateList($book_id)
     {
         $evaluate = new ViewBookEvaluate();
         $evaluateList = $evaluate->where('book_id', $book_id)->select();
@@ -241,7 +243,12 @@ class User extends Controller
             'data' => $data,
         ]);
     }
-
+    /**
+     * 获得一个订单项的所有评价评论
+     *
+     * @param array $comment 该订单项下的所有评价
+     * @return array
+     */
     protected function getEvaluateItem($comment)
     {
         return [
@@ -426,7 +433,7 @@ class User extends Controller
     }
 
 
-   
+
 
     /**
      * 用户查看订单列表删除订单
