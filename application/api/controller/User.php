@@ -30,7 +30,7 @@ class User extends Controller
         $username = $request->param('username');
         $password = $request->param('password');
 
-        if (empty($password) || empty($username)) {
+        if (is_null($password) || is_null($username)) {
             return json(["code" => 400, "msg" => "用户名或密码为空"]);
         }
 
@@ -58,7 +58,7 @@ class User extends Controller
      */
     public function myCollect($user_id)
     {
-        if (empty($user_id)) {
+        if (is_null($user_id)) {
             return json([
                 'code' => '404',
                 'msg' => 'user_id is null'
@@ -80,7 +80,7 @@ class User extends Controller
      */
     public function myOrder($user_id)
     {
-        if (empty($user_id)) {
+        if (is_null($user_id)) {
             return json([
                 'code' => '404',
                 'msg' => 'user_id is null'
@@ -102,10 +102,10 @@ class User extends Controller
      */
     public function myAddress($user_id)
     {
-        if (empty($user_id)) {
+        if (is_null($user_id)) {
             return json([
                 'code' => '404',
-                'msg' => 'user_id is null'
+                'msg' => 'Necessary param is null'
             ]);
         }
         $Address = new ViewMyAddress();
@@ -125,10 +125,10 @@ class User extends Controller
     public function editAddress(Request $request)
     {
         $address_id = $request->param('address_id');
-        if (empty($address_id)) {
+        if (is_null($address_id)) {
             return json([
                 'code' => 404,
-                'msg' => 'id为空'
+                'msg' => 'Necessary param is null'
             ]);
         }
         $Address = Address::get($address_id);
@@ -141,7 +141,7 @@ class User extends Controller
         //通过两次键值翻转,去除数组中的索引部分,否则更新数据时会将索引识别为字段
         $data = array_flip(array_flip($request->param()));
         $res = $Address->save($data);
-        if ($res == 0) {
+        if ($res === false) {
             return json([
                 'code' => 500,
                 'msg' => 'update failed'
@@ -160,7 +160,7 @@ class User extends Controller
      * @param String $type_id 
      * @return json 书本数组
      */
-    public function bookList($type_id)
+    public function bookList($type_id = 0)
     {
         $book = new ViewBookList();
         $list = [];
@@ -184,14 +184,14 @@ class User extends Controller
      */
     public function book($book_id)
     {
-        if (empty($book_id)) {
+        if (is_null($book_id)) {
             return json([
                 'code' => 404,
-                'msg' => 'id is null'
+                'msg' => 'Necessary param is null'
             ]);
         }
         $book = new ViewBookDetail();
-        $book = $book->where('book_id', $book_id)->select();
+        $book = $book->where('book_id', $book_id)->find();
         return json([
             'code' => '200',
             'data' => $book
@@ -223,10 +223,10 @@ class User extends Controller
      */
     public function shopCart($user_id)
     {
-        if (empty($user_id)) {
+        if (is_null($user_id)) {
             return json([
                 'code' => '404',
-                'msg' => 'user_id is null'
+                'msg' => 'Necessary param is null'
             ]);
         }
         $cart = new ViewShopCart();
@@ -246,7 +246,7 @@ class User extends Controller
      */
     public function evaluateList($book_id)
     {
-        if (empty($book_id)) {
+        if (is_null($book_id)) {
             return json([
                 'code' => '404',
                 'msg' => 'book_id is null'
@@ -328,7 +328,7 @@ class User extends Controller
             'remark'            => $remark,
         ]);
         $result = $order->save();
-        if ($result===false) {
+        if ($result === false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'insert failed'
@@ -350,7 +350,7 @@ class User extends Controller
             $book->book_count = $count; //更改库存数量
             $result = $book->save();
 
-            if ($result===false) {
+            if ($result === false) {
                 return json([
                     'code'  => 500,
                     'msg'   => 'update failed'
@@ -366,7 +366,7 @@ class User extends Controller
 
             $result = $orderItem->save();
 
-            if ($result===false) {
+            if ($result === false) {
                 return json([
                     'code'  => 500,
                     'msg'   => 'insert failed'
@@ -380,7 +380,7 @@ class User extends Controller
             "order_id"      =>  $order_id                //返回订单id
         ]);
     }
-    
+
     /**
      * 修改订单地址信息(要在发货前修改)
      *
@@ -395,7 +395,7 @@ class User extends Controller
         $order = new Order();
         $order = $order->where('order_id', $order_id)->find();
 
-        if (empty($order))
+        if (is_null($order))
 
             return json([
                 'code'  => '401',
@@ -412,7 +412,7 @@ class User extends Controller
         $order->address_id = $address_id;
 
         $result = $order->save();
-        if ($result===false) {
+        if ($result === false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'update failed'
@@ -439,7 +439,7 @@ class User extends Controller
         $order = new Order();
         $order = $order->where('order_id', $order_id)->find();
 
-        if (empty($order))
+        if (is_null($order))
 
             return json([
                 'code'  => '401',
@@ -449,7 +449,7 @@ class User extends Controller
         $order->order_state_id = $order_state_id;
 
         $result = $order->save();
-        if ($result===false) {
+        if ($result === false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'update failed'
@@ -479,7 +479,7 @@ class User extends Controller
         $order = new Order();
         $order = $order->where('order_id', $order_id)->find();
 
-        if (empty($order))
+        if (is_null($order))
 
             return json([
                 'code'  => '401',
@@ -493,7 +493,7 @@ class User extends Controller
         $result = $order->save();
 
 
-        if ($result===false) {
+        if ($result === false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'update failed'
@@ -507,7 +507,7 @@ class User extends Controller
         ]);
     }
 
-     /**
+    /**
      * 用户取消订单
      *
      * @param Request $request
@@ -520,7 +520,7 @@ class User extends Controller
         $order = new Order();
         $order = $order->where('order_id', $order_id)->find();
 
-        if (empty($order))
+        if (is_null($order))
 
             return json([
                 'code'  => '401',
@@ -532,7 +532,7 @@ class User extends Controller
         $result = $order->save();
 
 
-        if ($result===false) {
+        if ($result === false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'update failed'
@@ -552,7 +552,7 @@ class User extends Controller
 
             $result = $book->save();
 
-            if ($result===false) {
+            if ($result === false) {
                 return json([
                     'code'  => 500,
                     'msg'   => 'update failed'
@@ -567,7 +567,7 @@ class User extends Controller
     }
 
 
-     /**
+    /**
      * 添加书本到购物车
      *
      * @param Request $request
@@ -579,7 +579,7 @@ class User extends Controller
         $user_id = $request->param()['user_id'];   //用户id
 
 
-        if (empty($user_id) || empty($book_id))
+        if (is_null($user_id) || is_null($book_id))
 
             return json([
                 'code'  => '401',
@@ -589,12 +589,12 @@ class User extends Controller
         $shopCart = new ShopCart();
 
         $oldCart =  $shopCart       //首先查询购物车是否有该物品               
-                    ->where('user_id', $user_id)
-                    ->where('book_id', $book_id)
-                    ->find();
+            ->where('user_id', $user_id)
+            ->where('book_id', $book_id)
+            ->find();
 
         //如果不是空的，则存在购物车的该物品数量加1
-        if (!empty($oldCart)) {
+        if (!is_null($oldCart)) {
             $oldCart->count++;
 
             $result = $oldCart->save();
@@ -611,7 +611,7 @@ class User extends Controller
             $result = $cart->save();
         }
 
-        if ($result===false) {
+        if ($result === false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'update failed'
@@ -625,7 +625,7 @@ class User extends Controller
         ]);
     }
 
-   /**
+    /**
      * 删除购物车的物品
      *
      * @param Request $request
@@ -659,7 +659,7 @@ class User extends Controller
         }
 
 
-        if (empty($user_id) || empty($bookList))
+        if (is_null($user_id) || is_null($bookList))
 
             return json([
                 'code'  => '401',
@@ -672,7 +672,7 @@ class User extends Controller
             $oldItem = $oldCart->where('book_id', $item['book_id'])->find();
 
             //如果不是空的，则删除
-            if (!empty($oldItem)) {
+            if (!is_null($oldItem)) {
 
                 $result = $oldItem->delete();
 
@@ -713,7 +713,7 @@ class User extends Controller
         $count = $request->param()['count'];   //数量
 
 
-        if (empty($user_id) || empty($user_id))
+        if (is_null($user_id) || is_null($user_id))
 
             return json([
                 'code'  => '401',
@@ -728,12 +728,12 @@ class User extends Controller
             ->find();
 
         //如果不是空的，则添加数量
-        if (!empty($oldCart)) {
+        if (!is_null($oldCart)) {
             $oldCart->count = $count;
 
             $result = $oldCart->save();
 
-            if ($result===false) {
+            if ($result === false) {
                 return json([
                     'code'  => 500,
                     'msg'   => 'update failed'
@@ -755,7 +755,7 @@ class User extends Controller
         }
     }
 
-      /**
+    /**
      * 添加书本到收藏夹
      *
      * @param Request $request
@@ -767,7 +767,7 @@ class User extends Controller
         $user_id = $request->param()['user_id'];   //用户id
 
 
-        if (empty($user_id) || empty($book_id))
+        if (is_null($user_id) || is_null($book_id))
 
             return json([
                 'code'  => '401',
@@ -777,17 +777,16 @@ class User extends Controller
         $collect = new Collect();
 
         $oldCollect =  $collect       //首先查询购物车是否有该物品               
-                    ->where('user_id', $user_id)
-                    ->where('book_id', $book_id)
-                    ->find();
+            ->where('user_id', $user_id)
+            ->where('book_id', $book_id)
+            ->find();
 
         //如果不是空的，则存在购物车的该物品数量加1
-        if (!empty($oldCollect)) {
-                return json([
-                    'code'  => 401,
-                    'msg'   => '已收藏过'
-                ]);
-            
+        if (!is_null($oldCollect)) {
+            return json([
+                'code'  => 401,
+                'msg'   => '已收藏过'
+            ]);
         }
         //如果是空的，则直接添加到购物车
         else {
@@ -800,7 +799,7 @@ class User extends Controller
             $result = $collect->save();
         }
 
-        if ($result===false) {
+        if ($result === false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'insert failed'
@@ -814,7 +813,7 @@ class User extends Controller
         ]);
     }
 
-     /**
+    /**
      * 删除收藏夹的物品
      *
      * @param Request $request
@@ -847,7 +846,7 @@ class User extends Controller
         }
 
 
-        if (empty($user_id) || empty($bookList))
+        if (is_null($user_id) || is_null($bookList))
 
             return json([
                 'code'  => '401',
@@ -860,7 +859,7 @@ class User extends Controller
             $oldItem = $oldCollect->where('book_id', $item['book_id'])->find();
 
             //如果不是空的，则删除
-            if (!empty($oldItem)) {
+            if (!is_null($oldItem)) {
 
                 $result = $oldItem->delete();
 
@@ -885,5 +884,4 @@ class User extends Controller
             "msg"           => "删除成功",
         ]);
     }
-
 }
