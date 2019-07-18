@@ -32,7 +32,7 @@ return [
         'editAddress'               => ['api/user/editAddress', ['method' => 'POST']],
         'shopCart/:user_id'         => ['api/user/shopCart', ['method' => 'get']],
         'bookList/:type_id'         => ['api/user/bookList', ['method' => 'get']],
-        'book/:book_id'             => ['api/user/book', ['method' => 'get']],
+        'bookDetail/:book_id'             => ['api/user/bookDetail', ['method' => 'get']],
         'bookType'                  => ['api/user/bookType', ['method' => 'get']],
         'evaluateList/:book_id'     => ['api/user/evaluateList', ['method' => 'get']],
         'orderCancel'               => ['api/user/orderCancel', ['method' => 'POST']],

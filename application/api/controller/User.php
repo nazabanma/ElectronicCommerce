@@ -86,18 +86,8 @@ class User extends Controller
      */
     public function myAddress($user_id)
     {
-        if (is_null($user_id)) {
-            return json([
-                'code' => '404',
-                'msg' => 'Necessary param is null'
-            ]);
-        }
-        $Address = new ViewMyAddress();
-        $data = $Address->where('user_id', $user_id)->select();
-        return json([
-            'code' => '200',
-            'data' => $data
-        ]);
+        $model = new ViewMyAddress();
+        return $model->myAddress($user_id);
     }
 
     /**
@@ -106,35 +96,9 @@ class User extends Controller
      * @param Request $request
      * @return json 编辑结果
      */
-    public function editAddress(Request $request)
+    public function editAddress(\think\Request $request)
     {
-        $address_id = $request->param('address_id');
-        if (is_null($address_id)) {
-            return json([
-                'code' => 404,
-                'msg' => 'Necessary param is null'
-            ]);
-        }
-        $Address = Address::get($address_id);
-        if (!$Address) {
-            return json([
-                'code' => 404,
-                'msg' => '该记录不存在'
-            ]);
-        }
-        //通过两次键值翻转,去除数组中的索引部分,否则更新数据时会将索引识别为字段
-        $data = array_flip(array_flip($request->param()));
-        $res = $Address->save($data);
-        if ($res === false) {
-            return json([
-                'code' => 500,
-                'msg' => 'update failed'
-            ]);
-        }
-        return json([
-            'code' => 200,
-            'msg' => 'success'
-        ]);
+        return  Address::editAddress($request);
     }
 
 
@@ -146,18 +110,8 @@ class User extends Controller
      */
     public function bookList($type_id = 0)
     {
-        $book = new ViewBookList();
-        $list = [];
-        if ($type_id == '0') {
-            $list = $book->select();
-        } else {
-            $list = $book->where('book_type_id', $type_id)->select();
-        }
-
-        return json([
-            'code' => '200',
-            'data' => $list
-        ]);
+        $model = new ViewBookList();
+        return $model->bookList($type_id);
     }
 
     /**
@@ -166,20 +120,10 @@ class User extends Controller
      * @param String $book_id 
      * @return json 书籍信息数组
      */
-    public function book($book_id)
+    public function bookDetail($book_id)
     {
-        if (is_null($book_id)) {
-            return json([
-                'code' => 404,
-                'msg' => 'Necessary param is null'
-            ]);
-        }
-        $book = new ViewBookDetail();
-        $book = $book->where('book_id', $book_id)->find();
-        return json([
-            'code' => '200',
-            'data' => $book
-        ]);
+        $model = new ViewBookDetail();
+        return $model->bookDetail($book_id);
     }
 
 
@@ -207,18 +151,8 @@ class User extends Controller
      */
     public function shopCart($user_id)
     {
-        if (is_null($user_id)) {
-            return json([
-                'code' => '404',
-                'msg' => 'Necessary param is null'
-            ]);
-        }
-        $cart = new ViewShopCart();
-        $list = $cart->where('user_id', $user_id)->select();
-        return json([
-            'code' => '200',
-            'data' => $list
-        ]);
+        $model = new ViewShopCart();
+        return $model->shopCart($user_id);
     }
 
 
@@ -230,60 +164,8 @@ class User extends Controller
      */
     public function evaluateList($book_id)
     {
-        if (is_null($book_id)) {
-            return json([
-                'code' => '404',
-                'msg' => 'book_id is null'
-            ]);
-        }
-        $evaluate = new ViewBookEvaluate();
-        $evaluateList = $evaluate->where('book_id', $book_id)->select();
-        // 返回结果
-        $data = [];
-        // 对评价的评论的顺组
-        $comment = [];
-        //不能直接等于evaluateList[0]['order_item_id'],否则若数组为空则报错
-        $prev = -1;
-        foreach ($evaluateList as $evaluateItem) {
-            $temp = [
-                'id' => $evaluateItem['evaluate_id'],
-                'name' => $evaluateItem['nick_name'],
-                'content' => $evaluateItem['content'],
-                'time' => $evaluateItem['evaluate_time'],
-                'order_item_id' => $evaluateItem['order_item_id'],
-                'like_count' => EvaluateLike::where('evaluate_id', $evaluateItem['evaluate_id'])->count()
-            ];
-            if ($prev > 0 && $prev != $evaluateItem['order_item_id']) {
-                array_push($data, $this->getEvaluateItem($comment));
-                $comment = [];
-            }
-            //相当于array_push
-            $comment[] = $temp;
-            $prev = $evaluateItem['order_item_id'];
-        }
-        array_push($data, $this->getEvaluateItem($comment));
-        return json([
-            'code' => '200',
-            'data' => $data,
-        ]);
-    }
-    /**
-     * 获得一个订单项的评价及评论
-     *
-     * @param array $comment 该订单项下的所有评价
-     * @return array
-     */
-    protected function getEvaluateItem($comment)
-    {
-        return [
-            'id' => $comment[0]['id'],
-            'name' => $comment[0]['name'],
-            'content' => $comment[0]['content'],
-            'time' => $comment[0]['time'],
-            'order_item_id' => $comment[0]['order_item_id'],
-            'like_count' => $comment[0]['like_count'],
-            'comment' => array_splice($comment, 1),
-        ];
+        $model = new ViewBookEvaluate();
+        return $model->evaluateList($book_id);
     }
 
 
@@ -294,86 +176,11 @@ class User extends Controller
      * @param String $request
      * @return 购买信息
      */
-    public function createOrder(Request $request)
+    public function createOrder(\think\Request $request)
     {
-        $orderList = $request->param()['order_list'];           //接收到的订单数组
-        $user_id = $request->param()['user_id'];                //用户id
-        $address_id = $request->param()['address_id'];          //地址id
-        $remark = $request->param()['remark'];                  //订单备注
-
-        //创建订单，此时订单状态为待支付
-        $order = new Order([
-            'user_id'           => $user_id,
-            'address_id'        => $address_id,
-            'order_state_id'    => 0,
-            'create_time'       => date("Y-m-d H:i:s"),
-            //用户是否删除订单的标志，0表示用户在查看订单列表时不删除订单
-            'flag'              => 0,
-            'remark'            => $remark,
-        ]);
-        $result = $order->save();
-        if ($result === false) {
-            return json([
-                'code'  => 500,
-                'msg'   => 'insert failed'
-            ]);
-        }
-        $order_id = $order->order_id;
-        foreach ($orderList as $item) {
-            try {
-                $this->createOrderItem($item, $order_id);
-            } catch (Exception $th) {
-                return json([
-                    'code'  => $th->getCode(),
-                    'msg'   => $th->getMessage()
-                ]);
-            }
-        }
-        return json([
-            "statusCode"    => 200,
-            "msg"           => "创建订单成功",
-            "order_id"      =>  $order_id                //返回订单id
-        ]);
+        $model=new Order();
+        return $model->createOrder($request);
     }
-
-    /**
-     * 创建订单项
-     *
-     * @param Array $item
-     * @param String $order_id
-     * @return void
-     */
-    protected function createOrderItem($item, $order_id)
-    {
-        //给订单添加物品
-        $book = new Book();       //先要查此时的书本库存数量够不够，不够则返回库存不足
-        $book = $book->where('book_id', $item['book_id'])->find();
-        $count = $book->book_count - $item['count'];
-
-        if ($count < 0) {
-            throw new Exception($book->book_name . '库存不足', 401);
-        }
-        $book->book_count = $count; //更改库存数量
-        $result = $book->save();
-
-        if ($result === false) {
-            throw new Exception('update failed', 500);
-        }
-        //创建订单里的物品信息
-        $orderItem = new OrderItem([
-            'count'     => $item['count'],
-            'book_id'   => $item['book_id'],
-            'price'     => $item['price'],
-            'order_id'  => $order_id,
-        ]);
-
-        $result = $orderItem->save();
-
-        if ($result === false) {
-            throw new Exception('insert failed', 500);
-        }
-    }
-
 
 
     /**
