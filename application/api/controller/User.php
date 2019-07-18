@@ -205,7 +205,7 @@ class User extends Controller
      */
     public function orderStateUpdate(Request $request)
     {
-        $this->Order->orderStateUpdate($request);
+        return $this->Order->orderStateUpdate($request);
     }
 
 
@@ -243,7 +243,7 @@ class User extends Controller
      */
     public function cartAdd(Request $request)
     {
-        $this->Cart->cartAdd();
+        return $this->Cart->cartAdd();
     }
 
     /**
@@ -271,7 +271,7 @@ class User extends Controller
      */
     public function cartUpdate(Request $request)
     {
-        $this->Cart->cartUpdate($request);
+        return $this->Cart->cartUpdate($request);
     }
 
     /**
@@ -282,7 +282,7 @@ class User extends Controller
      */
     public function collectAdd(Request $request)
     {
-        $this->Collect->collectAdd($request);
+        return $this->Collect->collectAdd($request);
     }
 
     /**
