@@ -293,11 +293,11 @@ class User extends Controller
      */
     public function collectDelete(Request $request)
     {
-        $this->Collect->collectDelete($request);
+        return $this->Collect->collectDelete($request);
     }
 
     public function collectDeleteAll($user_id)
     {
-        $this->Collect->collectDeleteAll($user_id);
+        return $this->Collect->collectDeleteAll($user_id);
     }
 }

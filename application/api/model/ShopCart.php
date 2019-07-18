@@ -67,15 +67,15 @@ class ShopCart extends Model
     {
         $carts = json_decode($request->param('carts'), true);   //用户选择的所有书本
         $res = ShopCart::destroy($carts);
-        if ($res === false) {
+        if ($res) {
             return json([
-                'code'  => 500,
-                'msg'   => 'delete failed'
+                "statusCode"    => 200,
+                "msg"           => "删除成功",
             ]);
         }
         return json([
-            "statusCode"    => 200,
-            "msg"           => "删除成功",
+            'code'  => 500,
+            'msg'   => 'delete failed'
         ]);
     }
 

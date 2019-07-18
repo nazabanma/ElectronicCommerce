@@ -75,6 +75,12 @@ class Collect extends Model
     public function collectDelete(Request $request)
     {
         $Collects = json_decode($request->param('collects'), true);   //用户选择的所有书本
+        if (empty($Collects)) {
+            return json([
+                'code'  => 404,
+                'msg'   => 'Necessary param is empty'
+            ]);
+        }
         $res = Collect::destroy($Collects);
         if ($res === false) {
             return json([
@@ -99,15 +105,15 @@ class Collect extends Model
         $Collect = new Collect();
         $oldCollect = $Collect->where('user_id', $user_id);
         $result = $oldCollect->delete();
-        if ($result === false) {
+        if ($result) {
             return json([
-                'code'  => 500,
-                'msg'   => 'delete failed'
+                "statusCode"    => 200,
+                "msg"           => "删除成功",
             ]);
         }
         return json([
-            "statusCode"    => 200,
-            "msg"           => "删除成功",
+            'code'  => 500,
+            'msg'   => 'delete failed'
         ]);
     }
 }
