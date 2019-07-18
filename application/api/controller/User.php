@@ -4,6 +4,9 @@ namespace app\api\controller;
 
 use think\Controller;
 use think\Request;
+use think\Config;
+use think\Exception;
+use think\Db;
 use app\api\model\Address;
 use app\api\model\BookType;
 use app\api\model\Order;
@@ -11,6 +14,7 @@ use app\api\model\OrderItem;
 use app\api\model\EvaluateLike;
 use app\api\model\Collect;
 use app\api\model\ShopCart;
+use app\api\model\OrderCancel;
 use app\api\model\ViewMyCollect;
 use app\api\model\ViewMyOrder;
 use app\api\model\ViewBookList;
@@ -19,7 +23,7 @@ use app\api\model\ViewBookEvaluate;
 use app\api\model\ViewMyAddress;
 use app\api\model\ViewShopCart;
 use app\api\model\Book;
-use think\Config;
+
 
 class User extends Controller
 {
@@ -336,50 +340,61 @@ class User extends Controller
         }
         $order_id = $order->order_id;
         foreach ($orderList as $item) {
-            //给订单添加物品
-            $book = new Book();       //先要查此时的书本库存数量够不够，不够则返回库存不足
-            $book = $book->where('book_id', $item['book_id'])->find();
-            $count = $book->book_count - $item['count'];
-
-            if ($count < 0) {
+            try {
+                $this->createOrderItem($item, $order_id);
+            } catch (Exception $th) {
                 return json([
-                    'code'  => 401,
-                    'msg'   => $book->book_name . '库存不足'
-                ]);
-            }
-            $book->book_count = $count; //更改库存数量
-            $result = $book->save();
-
-            if ($result === false) {
-                return json([
-                    'code'  => 500,
-                    'msg'   => 'update failed'
-                ]);
-            }
-            //创建订单里的物品信息
-            $orderItem = new OrderItem([
-                'count'     => $item['count'],
-                'book_id'   => $item['book_id'],
-                'price'     => $item['price'],
-                'order_id'  => $order_id,
-            ]);
-
-            $result = $orderItem->save();
-
-            if ($result === false) {
-                return json([
-                    'code'  => 500,
-                    'msg'   => 'insert failed'
+                    'code'  => $th->getCode(),
+                    'msg'   => $th->getMessage()
                 ]);
             }
         }
-
         return json([
             "statusCode"    => 200,
             "msg"           => "创建订单成功",
             "order_id"      =>  $order_id                //返回订单id
         ]);
     }
+
+    /**
+     * 创建订单项
+     *
+     * @param Array $item
+     * @param String $order_id
+     * @return void
+     */
+    protected function createOrderItem($item, $order_id)
+    {
+        //给订单添加物品
+        $book = new Book();       //先要查此时的书本库存数量够不够，不够则返回库存不足
+        $book = $book->where('book_id', $item['book_id'])->find();
+        $count = $book->book_count - $item['count'];
+
+        if ($count < 0) {
+            throw new Exception($book->book_name . '库存不足', 401);
+        }
+        $book->book_count = $count; //更改库存数量
+        $result = $book->save();
+
+        if ($result === false) {
+            throw new Exception('update failed', 500);
+        }
+        //创建订单里的物品信息
+        $orderItem = new OrderItem([
+            'count'     => $item['count'],
+            'book_id'   => $item['book_id'],
+            'price'     => $item['price'],
+            'order_id'  => $order_id,
+        ]);
+
+        $result = $orderItem->save();
+
+        if ($result === false) {
+            throw new Exception('insert failed', 500);
+        }
+    }
+
+
 
     /**
      * 修改订单地址信息(要在发货前修改)
@@ -392,10 +407,16 @@ class User extends Controller
         $order_id = $request->param()['order_id'];                   //订单id
         $address_id = $request->param()['address_id'];         //用户修改的地址id
 
+        if (is_null($address_id)) {
+            return json([
+                'code'  => '404',
+                'msg'   => 'Necessary param is null'
+            ]);
+        }
         $order = new Order();
         $order = $order->where('order_id', $order_id)->find();
 
-        if (is_null($order))
+        if (empty($order))
 
             return json([
                 'code'  => '401',
@@ -403,7 +424,6 @@ class User extends Controller
             ]);
 
         if ($order->order_state_id != 1)
-
             return json([
                 'code'  => '401',
                 'msg'   => '订单不是待发货状态，无法修改'
@@ -435,7 +455,12 @@ class User extends Controller
     {
         $order_id = $request->param()['order_id'];
         $order_state_id = $request->param()['order_state_id'];
-
+        if (is_null($order_id) || is_null($order_state_id)) {
+            return json([
+                'code'  => '404',
+                'msg'   => 'Necessary param is null'
+            ]);
+        }
         $order = new Order();
         $order = $order->where('order_id', $order_id)->find();
 
@@ -447,7 +472,6 @@ class User extends Controller
             ]);
 
         $order->order_state_id = $order_state_id;
-
         $result = $order->save();
         if ($result === false) {
             return json([
@@ -455,8 +479,6 @@ class User extends Controller
                 'msg'   => 'update failed'
             ]);
         }
-
-
         return json([
             "statusCode"    => 200,
             "msg"           => "修改订单状态成功",
@@ -475,31 +497,30 @@ class User extends Controller
     public function orderDelete(Request $request)
     {
         $order_id = $request->param()['order_id'];   //用户删除的订单id
-
+        if (is_null($order_id)) {
+            return json([
+                'code'  => '404',
+                'msg'   => 'Necessary param is null'
+            ]);
+        }
         $order = new Order();
         $order = $order->where('order_id', $order_id)->find();
 
-        if (is_null($order))
-
+        if (empty($order)) {
             return json([
                 'code'  => '401',
                 'msg'   => '订单不存在'
             ]);
-
-
+        }
 
         $order->flag = 1;           //1表示用户删除订单，商家仍然可看见订单
-
         $result = $order->save();
-
-
         if ($result === false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'update failed'
             ]);
         }
-
 
         return json([
             "statusCode"    => 200,
@@ -516,56 +537,70 @@ class User extends Controller
     public function orderCancel(Request $request)
     {
         $order_id = $request->param()['order_id'];  //订单id
+        $detail = $request->param()['detail'];  //订单id
 
+        if (is_null($order_id)) {
+            return json([
+                'code'  => '404',
+                'msg'   => 'Necessary param is null'
+            ]);
+        }
         $order = new Order();
         $order = $order->where('order_id', $order_id)->find();
 
-        if (is_null($order))
-
+        if (empty($order)) {
             return json([
                 'code'  => '401',
                 'msg'   => '订单不存在'
             ]);
+        }
+        Db::startTrans();
+        try {
+            $order->order_state_id = 5; //订单状态id改成取消订单id
+            $result = $order->save();
+            if ($result === false) {
+                Db::rollback();
+            }
+            $orderItem = new OrderItem();
+            $orderList = $orderItem->where('order_id', $order_id)->select();
+            foreach ($orderList as $item) {
+                $this->updateItemBook($item);
+            }
+            Db::commit();
 
-        $order->order_state_id = 5; //订单状态id改成取消订单id
-
-        $result = $order->save();
-
-
-        if ($result === false) {
+            $OrderCancel = new OrderCancel();
+            $OrderCancel->save([
+                'detail'    => $detail,
+                'order_id'  => $order_id
+            ]);
+        } catch (Exception $th) {
+            Db::rollback();
             return json([
                 'code'  => 500,
-                'msg'   => 'update failed'
+                'msg'   => 'failed'
             ]);
         }
-
-        $orderItem = new OrderItem();
-        $orderList = $orderItem->where('order_id', $order_id)->select();
-
-        foreach ($orderList as $item) {
-            $book = new Book();
-            $book = $book->where('book_id', $item['book_id'])->find();
-
-            $count = $book->book_count + $item['count'];    //加回订单的数量
-
-            $book->book_count = $count;     //更改库存数量
-
-            $result = $book->save();
-
-            if ($result === false) {
-                return json([
-                    'code'  => 500,
-                    'msg'   => 'update failed'
-                ]);
-            }
-        }
-
         return json([
             'code'  => 200,
             'msg'   => '取消成功'
         ]);
     }
 
+
+    //mark
+
+    protected function updateItemBook($item)
+    {
+        $book = new Book();
+        $book = $book->where('book_id', $item['book_id'])->find();
+        $count = $book->book_count + $item['count'];    //加回订单的数量
+        $book->book_count = $count;     //更改库存数量
+        $result = $book->save();
+
+        if ($result === false) {
+            throw new Exception("update failed", 500);
+        }
+    }
 
     /**
      * 添加书本到购物车
