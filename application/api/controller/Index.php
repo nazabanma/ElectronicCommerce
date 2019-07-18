@@ -12,16 +12,7 @@ class Index extends Controller
     public function index()
     {
         return json([
-            [
-                'count'     =>  '1',
-                'book_id'   =>  '1',
-                'price'     =>  '1',
-            ],
-            [
-                'count'     =>  '2',
-                'book_id'   =>  '2',
-                'price'     =>  '2',
-            ],
+            1, 11
         ]);
     }
     public function test()

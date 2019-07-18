@@ -5,16 +5,10 @@ namespace app\api\controller;
 use think\Controller;
 use think\Request;
 use think\Config;
-use think\Exception;
-use think\Db;
 use app\api\model\Address;
-use app\api\model\BookType;
 use app\api\model\Order;
-use app\api\model\OrderItem;
-use app\api\model\EvaluateLike;
 use app\api\model\Collect;
 use app\api\model\ShopCart;
-use app\api\model\OrderCancel;
 use app\api\model\ViewMyCollect;
 use app\api\model\ViewMyOrder;
 use app\api\model\ViewBookList;
@@ -22,18 +16,21 @@ use app\api\model\ViewBookDetail;
 use app\api\model\ViewBookEvaluate;
 use app\api\model\ViewMyAddress;
 use app\api\model\ViewShopCart;
-use app\api\model\Book;
+
 
 
 class User extends Controller
 {
 
     private $Order;
-
+    private $Cart;
+    private $Collect;
     function _initialize()
     {
         parent::_initialize();
         $this->Order = new Order();
+        $this->Cart = new ShopCart();
+        $this->Collect = new Collect();
     }
     public function login(Request $request)
     {
@@ -182,9 +179,9 @@ class User extends Controller
      * @param String $request
      * @return 购买信息
      */
-    public function createOrder(\think\Request $request)
+    public function orderCreate(\think\Request $request)
     {
-        return $this->Order->createOrder($request);
+        return $this->Order->orderCreate($request);
     }
 
 
@@ -246,54 +243,7 @@ class User extends Controller
      */
     public function cartAdd(Request $request)
     {
-        $book_id = $request->param()['book_id'];   //用户收藏的书本id
-        $user_id = $request->param()['user_id'];   //用户id
-
-
-        if (is_null($user_id) || is_null($book_id))
-
-            return json([
-                'code'  => '401',
-                'msg'   => '请求参数有误'
-            ]);
-
-        $shopCart = new ShopCart();
-
-        $oldCart =  $shopCart       //首先查询购物车是否有该物品               
-            ->where('user_id', $user_id)
-            ->where('book_id', $book_id)
-            ->find();
-
-        //如果不是空的，则存在购物车的该物品数量加1
-        if (!is_null($oldCart)) {
-            $oldCart->count++;
-
-            $result = $oldCart->save();
-        }
-        //如果是空的，则直接添加到购物车
-        else {
-            $cart = new ShopCart([
-                'user_id'       => $user_id,
-                'book_id'       => $book_id,
-                'create_time'   => date("Y-m-d H:i:s"),
-                'count'         => 1
-            ]);
-
-            $result = $cart->save();
-        }
-
-        if ($result === false) {
-            return json([
-                'code'  => 500,
-                'msg'   => 'update failed'
-            ]);
-        }
-
-
-        return json([
-            "statusCode"    => 200,
-            "msg"           => "添加成功",
-        ]);
+        $this->Cart->cartAdd();
     }
 
     /**
@@ -304,71 +254,13 @@ class User extends Controller
      */
     public function cartDelete(Request $request)
     {
-        $bookList = $request->param()['book_list'];   //用户选择的所有书本
-        $user_id = $request->param()['user_id'];   //用户id
-        $ifAll = $request->param()['if_all'];   //是否全部删除
-
-        $shopCart = new ShopCart();
-        $oldCart = $shopCart->where('user_id', $user_id);
-
-
-        if ($ifAll == '1') {
-
-            $result = $oldCart->delete();
-
-            if ($result === false) {
-                return json([
-                    'code'  => 500,
-                    'msg'   => 'delete failed'
-                ]);
-            } else {
-                return json([
-                    "statusCode"    => 200,
-                    "msg"           => "删除成功",
-                ]);
-            }
-        }
-
-
-        if (is_null($user_id) || is_null($bookList))
-
-            return json([
-                'code'  => '401',
-                'msg'   => '请求参数有误'
-            ]);
-
-        //遍历书本数组
-        foreach ($bookList as $item) {
-            //查找购物车的书本
-            $oldItem = $oldCart->where('book_id', $item['book_id'])->find();
-
-            //如果不是空的，则删除
-            if (!is_null($oldItem)) {
-
-                $result = $oldItem->delete();
-
-                if ($result === false) {
-                    return json([
-                        'code'  => 500,
-                        'msg'   => 'delete failed'
-                    ]);
-                }
-            }
-            //如果是空的，提示不存在
-            else {
-                return json([
-                    'code'  => 401,
-                    'msg'   => '不存在该物品'
-                ]);
-            }
-        }
-
-        return json([
-            "statusCode"    => 200,
-            "msg"           => "删除成功",
-        ]);
+        return $this->Cart->cartDelete($request);
     }
 
+    public function cartDeleteAll($user_id)
+    {
+        return $this->Cart->cartDeleteAll($user_id);
+    }
 
 
     /**
@@ -379,51 +271,7 @@ class User extends Controller
      */
     public function cartUpdate(Request $request)
     {
-        $book_id = $request->param()['book_id'];   //用户收藏的书本id
-        $user_id = $request->param()['user_id'];   //用户id
-        $count = $request->param()['count'];   //数量
-
-
-        if (is_null($user_id) || is_null($user_id))
-
-            return json([
-                'code'  => '401',
-                'msg'   => '请求参数有误'
-            ]);
-
-        $shopCart = new ShopCart();
-
-        $oldCart =  $shopCart       //首先查询购物车是否有该物品               
-            ->where('user_id', $user_id)
-            ->where('book_id', $book_id)
-            ->find();
-
-        //如果不是空的，则添加数量
-        if (!is_null($oldCart)) {
-            $oldCart->count = $count;
-
-            $result = $oldCart->save();
-
-            if ($result === false) {
-                return json([
-                    'code'  => 500,
-                    'msg'   => 'update failed'
-                ]);
-            }
-
-
-            return json([
-                "statusCode"    => 200,
-                "msg"           => "更新成功",
-            ]);
-        }
-        //如果是空的
-        else {
-            return json([
-                'code'  => 401,
-                'msg'   => '不存在该物品'
-            ]);
-        }
+        $this->Cart->cartUpdate($request);
     }
 
     /**
@@ -434,54 +282,7 @@ class User extends Controller
      */
     public function collectAdd(Request $request)
     {
-        $book_id = $request->param()['book_id'];   //用户收藏的书本id
-        $user_id = $request->param()['user_id'];   //用户id
-
-
-        if (is_null($user_id) || is_null($book_id))
-
-            return json([
-                'code'  => '401',
-                'msg'   => '请求参数有误'
-            ]);
-
-        $collect = new Collect();
-
-        $oldCollect =  $collect       //首先查询购物车是否有该物品               
-            ->where('user_id', $user_id)
-            ->where('book_id', $book_id)
-            ->find();
-
-        //如果不是空的，则存在购物车的该物品数量加1
-        if (!is_null($oldCollect)) {
-            return json([
-                'code'  => 401,
-                'msg'   => '已收藏过'
-            ]);
-        }
-        //如果是空的，则直接添加到购物车
-        else {
-            $collect = new Collect([
-                'user_id'       => $user_id,
-                'book_id'       => $book_id,
-                'create_time'   => date("Y-m-d H:i:s"),
-            ]);
-
-            $result = $collect->save();
-        }
-
-        if ($result === false) {
-            return json([
-                'code'  => 500,
-                'msg'   => 'insert failed'
-            ]);
-        }
-
-
-        return json([
-            "statusCode"    => 200,
-            "msg"           => "添加成功",
-        ]);
+        $this->Collect->collectAdd($request);
     }
 
     /**
@@ -492,67 +293,11 @@ class User extends Controller
      */
     public function collectDelete(Request $request)
     {
-        $bookList = $request->param()['book_list'];   //用户选择的所有书本
-        $user_id = $request->param()['user_id'];   //用户id
-        $ifAll = $request->param()['if_all'];   //是否全部删除
+        $this->Collect->collectDelete($request);
+    }
 
-        $collect = new Collect();
-        $oldCollect = $collect->where('user_id', $user_id);
-
-        if ($ifAll == '1') {
-
-            $result = $oldCollect->delete();
-
-            if ($result === false) {
-                return json([
-                    'code'  => 500,
-                    'msg'   => 'delete failed'
-                ]);
-            } else {
-                return json([
-                    "statusCode"    => 200,
-                    "msg"           => "删除成功",
-                ]);
-            }
-        }
-
-
-        if (is_null($user_id) || is_null($bookList))
-
-            return json([
-                'code'  => '401',
-                'msg'   => '请求参数有误'
-            ]);
-
-        //遍历书本数组
-        foreach ($bookList as $item) {
-            //查找收藏夹的书本
-            $oldItem = $oldCollect->where('book_id', $item['book_id'])->find();
-
-            //如果不是空的，则删除
-            if (!is_null($oldItem)) {
-
-                $result = $oldItem->delete();
-
-                if ($result === false) {
-                    return json([
-                        'code'  => 500,
-                        'msg'   => 'delete failed'
-                    ]);
-                }
-            }
-            //如果是空的，提示不存在
-            else {
-                return json([
-                    'code'  => 401,
-                    'msg'   => '不存在该物品'
-                ]);
-            }
-        }
-
-        return json([
-            "statusCode"    => 200,
-            "msg"           => "删除成功",
-        ]);
+    public function collectDeleteAll($user_id)
+    {
+        $this->Collect->collectDeleteAll($user_id);
     }
 }

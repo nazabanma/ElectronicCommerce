@@ -22,13 +22,12 @@ class Order extends Model
      * @param String $request
      * @return 购买信息
      */
-    public function createOrder(Request $request)
+    public function orderCreate(Request $request)
     {
         $orderList = json_decode($request->param()['order_list'], true);  //接收到的订单数组
         $user_id = $request->param()['user_id'];                    //用户id
         $address_id = $request->param()['address_id'];              //地址id
         $remark = $request->param()['remark'];                      //订单备注
-
 
         try {
             Db::startTrans();
