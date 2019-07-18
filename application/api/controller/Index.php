@@ -11,7 +11,18 @@ class Index extends Controller
 {
     public function index()
     {
-        return 'api-index';
+        return json([
+            [
+                'count'     =>  '1',
+                'book_id'   =>  '1',
+                'price'     =>  '1',
+            ],
+            [
+                'count'     =>  '2',
+                'book_id'   =>  '2',
+                'price'     =>  '2',
+            ],
+        ]);
     }
     public function test()
     {

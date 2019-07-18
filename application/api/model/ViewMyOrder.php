@@ -21,7 +21,7 @@ class ViewMyOrder extends Model
             ]);
         }
         $Order = new ViewMyOrder();
-        $data = $Order->where('user_id', $user_id)->select();
+        $data = $Order->where('user_id', $user_id)->where('flag', '0')->select();
         return json([
             'code' => '200',
             'data' => $data
