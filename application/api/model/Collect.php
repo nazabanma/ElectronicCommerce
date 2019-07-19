@@ -4,6 +4,8 @@ namespace app\api\model;
 
 use think\Request;
 use think\Model;
+use app\api\model\ShopCart;
+use think\Db;
 
 class Collect extends Model
 {
@@ -161,4 +163,71 @@ class Collect extends Model
         ]);
     }
 
+
+    /**
+     * 从收藏夹选择书本到购物车
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function removeToCart(Request $request)
+    {
+        $collects = json_decode($request->param('collects'), true);   //用户选择的所有书本
+        $user_id = $request->param('user_id');
+        $oldCart = ShopCart::where('user_id', $user_id)->column('book_id');
+
+        if (empty($collects) || is_null($user_id)) {
+            return json([
+                'code'  => '404',
+                'msg'   => 'Necessary param is null'
+            ]);
+        }
+
+        try {
+            Db::startTrans();
+            foreach ($collects as $item) {
+
+                if (\in_array($item, $oldCart)) {
+                    continue;
+                }
+
+                $this->createCartItem($item, $user_id);
+            }
+
+            Db::commit();
+        } catch (Exception $th) {
+            Db::rollback();
+            return json([
+                'code'  => $th->getCode(),
+                'msg'   => $th->getMessage()
+            ]);
+        }
+        return json([
+            "statusCode"    => 200,
+            "msg"           => "加入购物车成功",
+        ]);
+    }
+
+    /**
+     * 
+     * //创建购物车项
+     * @param String $item
+     * @param String $user_id
+     * @return void
+     */
+    protected function createCartItem($item, $user_id)
+    {
+
+        $cartItem = new ShopCart([
+            'book_id'           => $item,
+            'create_time'       => date("Y-m-d H:i:s"),
+            'user_id'           => $user_id,
+            'count'             => 1
+        ]);
+
+        $result = $cartItem->save();
+        if ($result === false) {
+            throw new Exception('insert failed', 500);
+        }
+    }
 }

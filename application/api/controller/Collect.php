@@ -57,14 +57,13 @@ class Collect extends Controller
 
 
     /**
-     * 
-     * //创建收藏夹
-     * @param String $item
-     * @param String $user_id
+     * 从收藏夹选择书本到购物车
+     *
+     * @param Request $request
      * @return void
      */
-    protected function createCollectItem($item, $user_id)
+    public function removeToCart(Request $request)
     {
-        return $this->Collect->createCollectItem($item, $user_id);
+        return $this->removeToCart($request);
     }
 }
