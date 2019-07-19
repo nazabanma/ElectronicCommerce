@@ -4,6 +4,8 @@ namespace app\api\model;
 
 use think\Request;
 use think\Model;
+use think\Db;
+use app\api\model\Collect;
 
 class ShopCart extends Model
 {
@@ -148,6 +150,10 @@ class ShopCart extends Model
         ]);
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 255b9720c25513e983e648ddbce59bea4126712e
     /**
      * 从购物车选择书本到收藏夹
      *
@@ -158,7 +164,11 @@ class ShopCart extends Model
     {
         $carts = json_decode($request->param('carts'), true);   //用户选择的所有书本
         $user_id = $request->param('user_id');
+<<<<<<< HEAD
         $oldCollect = Collect::where('user_id', $user_id)->column('book_id');
+=======
+        $oldCollect=Collect::where('user_id',$user_id)->column('book_id');
+>>>>>>> 255b9720c25513e983e648ddbce59bea4126712e
 
         if (empty($carts) || is_null($user_id)) {
             return json([
@@ -171,8 +181,14 @@ class ShopCart extends Model
             Db::startTrans();
             foreach ($carts as $item) {
 
+<<<<<<< HEAD
                 if (\in_array($item, $oldCollect)) {
                     continue;
+=======
+                if(\in_array($item,$oldCollect))
+                {
+                     continue;
+>>>>>>> 255b9720c25513e983e648ddbce59bea4126712e
                 }
 
                 $this->createCollectItem($item, $user_id);
@@ -201,7 +217,11 @@ class ShopCart extends Model
      */
     protected function createCollectItem($item, $user_id)
     {
+<<<<<<< HEAD
 
+=======
+       
+>>>>>>> 255b9720c25513e983e648ddbce59bea4126712e
         $collectItem = new Collect([
             'book_id'           => $item,
             'create_time'       => date("Y-m-d H:i:s"),
