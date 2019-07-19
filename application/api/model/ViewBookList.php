@@ -1,7 +1,7 @@
 <?php
 
 namespace app\api\model;
-
+use think\Request;
 use think\Model;
 
 class ViewBookList extends Model
@@ -22,6 +22,32 @@ class ViewBookList extends Model
             $list = $book->where('book_type_id', $type_id)->select();
         }
 
+        return json([
+            'code' => '200',
+            'data' => $list
+        ]);
+    }
+
+     /**
+     * 根据书名进行模糊查询
+     *
+     * @param Request $request
+     * @return json 书本数组
+     */
+    public function bookFind($name)
+    {
+
+        $book = new ViewBookList();
+        $list = [];
+        if (is_null($name)) {
+            return json([
+                'code' => '404',
+                'msg' => 'Necessary param is null'
+            ]);
+        } else {
+            $list = $book->where('book_name','like','%'.$name.'%')->select();
+        }
+       
         return json([
             'code' => '200',
             'data' => $list
