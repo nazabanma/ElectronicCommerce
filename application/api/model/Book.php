@@ -45,7 +45,7 @@ class Book extends Model
      * @param Request $request
      * @return json 编辑结果
      */
-    public static function bookEdit(Request $request)
+    public  function bookEdit(Request $request)
     {
         $book_id = $request->param('book_id');
         if (is_null($book_id)) {

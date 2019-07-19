@@ -7,7 +7,7 @@ use think\Model;
 class ViewMyOrder extends Model
 {
     /**
-     * 查询所有订单
+     * 查询用户的所有订单
      *
      * @param String $user_id
      * @return json 订单信息
@@ -22,6 +22,23 @@ class ViewMyOrder extends Model
         }
         $Order = new ViewMyOrder();
         $data = $Order->where('user_id', $user_id)->where('flag', '0')->select();
+        return json([
+            'code' => '200',
+            'data' => $data
+        ]);
+    }
+
+
+    /**
+     * 查询所有订单
+     *
+     * @param String $user_id
+     * @return json 订单信息
+     */
+    public function allOrder()
+    {
+        $Order = new ViewMyOrder();
+        $data = $Order->where('flag', '0')->select();
         return json([
             'code' => '200',
             'data' => $data

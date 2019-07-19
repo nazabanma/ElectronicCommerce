@@ -11,9 +11,7 @@ class Index extends Controller
 {
     public function index()
     {
-        return json([
-            2, 3
-        ]);
+        return "<h1>那咋办嘛小组御用首页</h1><img src='http://wyxs.talesrunner.org/static/nazabanma/index.png'/>";
     }
     public function test()
     {

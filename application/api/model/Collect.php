@@ -116,4 +116,49 @@ class Collect extends Model
             'msg'   => 'delete failed'
         ]);
     }
+
+    /**
+     * 从购物车选择书本到收藏夹
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function removeToCollect(Request $request)
+    {
+        $carts = json_decode($request->param('carts'), true);   //用户选择的所有书本
+        $user_id = $request->param('user_id');
+        $oldCollect = Collect::where('user_id', $user_id)->column('book_id');
+
+        if (empty($carts) || is_null($user_id)) {
+            return json([
+                'code'  => '404',
+                'msg'   => 'Necessary param is null'
+            ]);
+        }
+
+        try {
+            Db::startTrans();
+            foreach ($carts as $item) {
+
+                if (\in_array($item, $oldCollect)) {
+                    continue;
+                }
+
+                $this->createCollectItem($item, $user_id);
+            }
+
+            Db::commit();
+        } catch (Exception $th) {
+            Db::rollback();
+            return json([
+                'code'  => $th->getCode(),
+                'msg'   => $th->getMessage()
+            ]);
+        }
+        return json([
+            "statusCode"    => 200,
+            "msg"           => "加入收藏夹成功",
+        ]);
+    }
+
 }

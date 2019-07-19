@@ -1,11 +1,12 @@
 <?php
+
 namespace app\api\model;
 
 use think\Model;
 
 class ViewBookEvaluate extends Model
 {
-       /**
+    /**
      * 根据书本id返回对应评价
      *
      * @param String $book_id
@@ -34,7 +35,8 @@ class ViewBookEvaluate extends Model
                 'content' => $evaluateItem['content'],
                 'time' => $evaluateItem['evaluate_time'],
                 'order_item_id' => $evaluateItem['order_item_id'],
-                'like_count' => EvaluateLike::where('evaluate_id', $evaluateItem['evaluate_id'])->count()
+                'like_count' => EvaluateLike::where('evaluate_id', $evaluateItem['evaluate_id'])->count(),
+                'zan_flag' => 1
             ];
             if ($prev > 0 && $prev != $evaluateItem['order_item_id']) {
                 array_push($data, $this->getEvaluateItem($comment));
@@ -68,5 +70,4 @@ class ViewBookEvaluate extends Model
             'comment' => array_splice($comment, 1),
         ];
     }
-
- }
+}

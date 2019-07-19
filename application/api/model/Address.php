@@ -29,8 +29,15 @@ class Address extends Model
                 'msg' => '该记录不存在'
             ]);
         }
-        //通过两次键值翻转,去除数组中的索引部分,否则更新数据时会将索引识别为字段
-        $data = array_flip(array_flip($request->param()));
+        $data = [
+            "if_default"        => $request->param('if_default'),
+            "receiver_name"     => $request->param('receiver_name'),
+            "receiver_phone"    => $request->param('receiver_phone'),
+            "concrete_address"  => $request->param('concrete_address'),
+            "province"          => $request->param('province'),
+            "city"              => $request->param('city'),
+            "area"              => $request->param('area'),
+        ];
         $res = $Address->save($data);
         if ($res === false) {
             return json([
