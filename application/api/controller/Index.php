@@ -11,7 +11,7 @@ class Index extends Controller
 {
     public function index()
     {
-        return "<h1>那咋办嘛小组御用首页</h1><img src='http://wyxs.talesrunner.org/static/nazabanma/index.png'/>";
+        return "<h1>那咋办嘛小组御用API</h1><img src='http://wyxs.talesrunner.org/static/nazabanma/index.png'/>";
     }
     public function test()
     {

@@ -3,6 +3,7 @@
 namespace app\api\model;
 
 use think\Model;
+use app\api\model\EvaluateLike;
 
 class ViewBookEvaluate extends Model
 {
@@ -12,14 +13,17 @@ class ViewBookEvaluate extends Model
      * @param String $book_id
      * @return json
      */
-    public function evaluateList($book_id)
+    public function evaluateList($book_id,$user_id)
     {
-        if (is_null($book_id)) {
+        if (is_null($book_id)||is_null($user_id)) {
             return json([
                 'code' => '404',
                 'msg' => 'book_id is null'
             ]);
         }
+          //查询点赞
+        $oldLike=EvaluateLike::where('user_id',$user_id)->column('evaluate_id');
+
         $evaluate = new ViewBookEvaluate();
         $evaluateList = $evaluate->where('book_id', $book_id)->select();
         // 返回结果
@@ -36,7 +40,8 @@ class ViewBookEvaluate extends Model
                 'time' => $evaluateItem['evaluate_time'],
                 'order_item_id' => $evaluateItem['order_item_id'],
                 'like_count' => EvaluateLike::where('evaluate_id', $evaluateItem['evaluate_id'])->count(),
-                'zan_flag' => 1
+                'if_like'=>in_array($evaluateItem['evaluate_id'],$oldLike)?'1':'0',
+                'img'=> $evaluateItem['img']
             ];
             if ($prev > 0 && $prev != $evaluateItem['order_item_id']) {
                 array_push($data, $this->getEvaluateItem($comment));
@@ -67,6 +72,8 @@ class ViewBookEvaluate extends Model
             'time' => $comment[0]['time'],
             'order_item_id' => $comment[0]['order_item_id'],
             'like_count' => $comment[0]['like_count'],
+            'if_like' => $comment[0]['if_like'],
+            'img' => $comment[0]['img'],
             'comment' => array_splice($comment, 1),
         ];
     }

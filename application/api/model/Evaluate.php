@@ -16,7 +16,7 @@ class Evaluate extends Model
     public function evaluate(Request $request)
     {
            $order_item_id=$request->param('order_item_id');     //订单项id
-           $user_id=$request->param('$user_id');                //用户id
+           $user_id=$request->param('user_id');                //用户id
            $content=$request->param('content');                 //评价内容
            $img='url';                                          //需要一个接收图片的方法并返回url
 

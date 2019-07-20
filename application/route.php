@@ -47,7 +47,7 @@ return [
     [
         'evaluate'                  => ['api/evaluate/evaluate',        ['method' => 'POST']],
         'evaluateLike'              => ['api/evaluate/evaluateLike',    ['method' => 'POST']],
-        'evaluateList/:book_id'              => ['api/evaluate/evaluateList',    ['method' => 'GET']],
+        'evaluateList'              => ['api/evaluate/evaluateList',    ['method' => 'POST']],
     ],
 
     '[book]'   =>

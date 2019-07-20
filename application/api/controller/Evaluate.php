@@ -41,10 +41,10 @@ class Evaluate extends Controller
      * @param String $book_id
      * @return json
      */
-    public function evaluateList($book_id)
+    public function evaluateList($book_id,$user_id)
     {
         $model = new ViewBookEvaluate();
-        return $model->evaluateList($book_id);
+        return $model->evaluateList($book_id,$user_id);
     }
 
 
