@@ -34,14 +34,16 @@ class ViewBookEvaluate extends Model
         $prev = -1;
         foreach ($evaluateList as $evaluateItem) {
             $temp = [
-                'id' => $evaluateItem['evaluate_id'],
-                'name' => $evaluateItem['nick_name'],
-                'content' => $evaluateItem['content'],
-                'time' => $evaluateItem['evaluate_time'],
+                'evaluate_id'   => $evaluateItem['evaluate_id'],
+                'name'          => $evaluateItem['nick_name'],
+                'content'       => $evaluateItem['content'],
+                'time'          => $evaluateItem['evaluate_time'],
                 'order_item_id' => $evaluateItem['order_item_id'],
-                'like_count' => EvaluateLike::where('evaluate_id', $evaluateItem['evaluate_id'])->count(),
-                'if_like'=>in_array($evaluateItem['evaluate_id'],$oldLike)?'1':'0',
-                'img'=> $evaluateItem['img']
+                'like_count'    => EvaluateLike::where('evaluate_id', $evaluateItem['evaluate_id'])->count(),
+                'if_like'       =>in_array($evaluateItem['evaluate_id'],$oldLike)?1:0,
+                'img'           => $evaluateItem['img'],
+                'if_anonymous'  =>$evaluateItem['if_anonymous'],
+                'head_img'      =>$evaluateItem['head_img'],
             ];
             if ($prev > 0 && $prev != $evaluateItem['order_item_id']) {
                 array_push($data, $this->getEvaluateItem($comment));
@@ -66,15 +68,17 @@ class ViewBookEvaluate extends Model
     protected function getEvaluateItem($comment)
     {
         return [
-            'id' => $comment[0]['id'],
-            'name' => $comment[0]['name'],
-            'content' => $comment[0]['content'],
-            'time' => $comment[0]['time'],
-            'order_item_id' => $comment[0]['order_item_id'],
-            'like_count' => $comment[0]['like_count'],
-            'if_like' => $comment[0]['if_like'],
-            'img' => $comment[0]['img'],
-            'comment' => array_splice($comment, 1),
+            'evaluate_id'       => $comment[0]['evaluate_id'],
+            'name'              => $comment[0]['name'],
+            'content'           => $comment[0]['content'],
+            'time'              => $comment[0]['time'],
+            'order_item_id'     => $comment[0]['order_item_id'],
+            'like_count'        => $comment[0]['like_count'],
+            'if_like'           => $comment[0]['if_like'],
+            'img'               => $comment[0]['img'],
+            'if_anonymous'      => $comment[0]['if_anonymous'],
+            'head_img'          => $comment[0]['head_img'],
+            'comment'           => array_splice($comment, 1),
         ];
     }
 }
