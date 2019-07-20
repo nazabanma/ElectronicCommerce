@@ -26,7 +26,9 @@ return [
         '*'             => 'index',
     ],
     '[user]' =>
-    [],
+    [
+        'userInfo/:user_id'          => ['api/user/userInfo',       ['method' => 'GET']],
+    ],
 
     '[address]' =>
     [

@@ -25,4 +25,27 @@ class User extends Model
     {
         return $this->hasMany('Collect', 'user_id');
     }
+
+    /**
+     * 查询用户
+     *
+     * @param String $user_id
+     * @return json 用户
+     */
+    public function userInfo($user_id)
+    {
+        $result = User::get($user_id);
+
+        if (is_null($result)) {
+            return json([
+                'code'  => '404',
+                'msg'   => 'user  is null'
+            ]);
+        }
+
+        return json([
+            'code'  => 200,
+            'data'  => $result
+        ]);
+    }
 }

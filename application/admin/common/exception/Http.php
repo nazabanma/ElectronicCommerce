@@ -6,12 +6,15 @@ use Exception;
 use think\exception\Handle;
 use think\exception\ValidateException;
 use think\exception\HttpException;
+use InvalidArgumentException;
 
 class Http extends Handle
 {
 
     public function render(Exception $e)
     {
+
+
 
         // 参数验证错误
         if ($e instanceof ValidateException) {
@@ -22,8 +25,11 @@ class Http extends Handle
         }
 
         // 请求异常
-        if ($e instanceof HttpException && request()->isAjax()) {
-            return response($e->getMessage(), $e->getStatusCode());
+        if ($e instanceof InvalidArgumentException) {
+            return json([
+                'code'  => $e->getCode(),
+                'msg'   => $e->getMessage(),
+            ]);
         }
 
         //TODO::开发者对异常的操作

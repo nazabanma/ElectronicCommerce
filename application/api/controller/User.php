@@ -13,8 +13,20 @@ use app\api\model\ViewShopCart;
 class User extends Controller
 {
 
-    
+    private $User;
 
-
-
+    function _initialize()
+    {
+        $this->User = new \app\api\model\User();
+    }
+    /**
+     * 查询用户
+     *
+     * @param String $user_id
+     * @return json 用户
+     */
+    public function userInfo($user_id)
+    {
+        return $this->User->userInfo($user_id);
+    }
 }

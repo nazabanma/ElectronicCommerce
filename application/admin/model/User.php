@@ -13,4 +13,13 @@ class User extends Model
             'data'  => User::all(),
         ]);
     }
+
+    public static function findUser($user_id)
+    {
+        paramValidata($user_id);
+        return json([
+            'code'  => 200,
+            'data'  => User::get($user_id),
+        ]);
+    }
 }

@@ -4,7 +4,6 @@ namespace app\admin\behavior;
 
 use think\Request;
 use think\Config;
-use app\admin\model\Admin;
 use app\admin\model\ViewAdminPower;
 
 class Auth

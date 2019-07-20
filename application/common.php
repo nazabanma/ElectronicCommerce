@@ -10,3 +10,9 @@
 // +----------------------------------------------------------------------
 
 // 应用公共文件
+function paramValidata($param)
+{
+    if (is_null($param) || $param == '') {
+        throw new InvalidArgumentException("Necessary param is null", 404);
+    }
+}

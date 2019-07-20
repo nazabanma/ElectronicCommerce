@@ -23,8 +23,8 @@ class Index extends BaseController
         return User::userList();
     }
 
-    public function test()
+    public function findUser($user_id)
     {
-        return ;
+        return User::findUser($user_id);
     }
 }
