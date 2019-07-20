@@ -5,6 +5,7 @@ namespace app\admin\behavior;
 use think\Request;
 use think\Config;
 use app\admin\model\Admin;
+use app\admin\model\ViewAdminPower;
 
 class Auth
 {
@@ -23,14 +24,7 @@ class Auth
             return;
         }
         $aid = Session('aid');
-        $Admin = new Admin();
-        $hasPower = $Admin->where([
-            'admin_id'      => $aid,
-            'controller'    => $controller,
-            'action'        => $action,
-        ])->count();
-        if (!$hasPower) {
-            throw new Exception("permission denied", 403);
-        }
+        $model = new ViewAdminPower();
+        $model->powervalidate($aid, $controller, $action);
     }
 }

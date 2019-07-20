@@ -47,5 +47,18 @@ class Evaluate extends Controller
         return $model->evaluateList($book_id,$user_id);
     }
 
+     /**
+     * 删除评论
+     *
+     * @param Request $request
+     * @return json 删除结果
+     */
+    public function evaluateDelete($evaluate_id)
+    {
+        $model = new \app\api\model\Evaluate();
+        return $model->evaluateDelete($evaluate_id);
+
+    }
+
 
 }

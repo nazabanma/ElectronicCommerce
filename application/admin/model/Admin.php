@@ -18,6 +18,7 @@ class Admin extends Model
                 'msg'   => 'user is not exited'
             ]);
         }
+        session('aid', $admin_id);
         return json([
             'code'  => '200',
             'msg'   => 'success'

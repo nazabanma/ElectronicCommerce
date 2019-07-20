@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\admin\model\Admin;
 use app\admin\common\base\BaseController;
+use app\admin\model\User;
 
 class Index extends BaseController
 {
@@ -17,10 +18,13 @@ class Index extends BaseController
         return $model->login($admin_id, $pwd);
     }
 
-    public function test()
+    public function userList()
     {
-        
-        return session('uid');
+        return User::userList();
     }
 
+    public function test()
+    {
+        return ;
+    }
 }
