@@ -21,12 +21,12 @@ return [
     ],
 
     '__domain__' => [
-        '*'      => 'api',
+        'api.wyxs'      => 'api',
+        'admin.wyxs'    => 'admin',
+        '*'             => 'index',
     ],
     '[user]' =>
-    [
-        
-    ],
+    [],
 
     '[address]' =>
     [
@@ -56,12 +56,12 @@ return [
         'bookDetail/:book_id'       => ['api/book/bookDetail',      ['method' => 'GET']],
         'bookType'                  => ['api/book/bookType',        ['method' => 'GET']],
         'evaluateList/:book_id'     => ['api/book/evaluateList',    ['method' => 'GET']],
-        'bookFind/:book_id'         => ['api/book/bookFind',        ['method' => 'GET']],
+        'bookFind/:name'            => ['api/book/bookFind',        ['method' => 'GET']],
         'bookAdd'                   => ['api/book/bookAdd',         ['method' => 'POST']],
         'bookEdit'                  => ['api/book/bookEdit',        ['method' => 'POST']],
         'bookDelete'                => ['api/book/bookDelete',      ['method' => 'POST']],
-        
-        
+
+
     ],
 
     '[cart]'   =>
@@ -82,7 +82,7 @@ return [
         'orderDelete'               => ['api/order/orderDelete',        ['method' => 'POST']],
         'orderStateUpdate'          => ['api/order/orderStateUpdate',   ['method' => 'POST']],
         'order/:user_id'            => ['api/order/myOrder',            ['method' => 'GET']],
-        
+
     ]
 
 ];

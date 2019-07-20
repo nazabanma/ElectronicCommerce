@@ -64,6 +64,6 @@ class Collect extends Controller
      */
     public function removeToCart(Request $request)
     {
-        return $this->removeToCart($request);
+        return $this->Collect->removeToCart($request);
     }
 }
