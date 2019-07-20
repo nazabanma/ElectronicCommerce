@@ -16,3 +16,8 @@ function paramValidata($param)
         throw new InvalidArgumentException("Necessary param is null", 404);
     }
 }
+
+function pwdEncode($pwd)
+{
+    return md5($pwd);
+}

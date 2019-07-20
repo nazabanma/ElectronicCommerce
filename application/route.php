@@ -25,9 +25,13 @@ return [
         'admin.wyxs'    => 'admin',
         '*'             => 'index',
     ],
+    '[admin]' =>
+    [
+        'login/:admin_id/:pwd'       => ['admin/user/login',            ['method' => 'POST']],
+    ],
     '[user]' =>
     [
-        'userInfo/:user_id'          => ['api/user/userInfo',       ['method' => 'GET']],
+        'userInfo/:user_id'          => ['api/user/userInfo',           ['method' => 'GET']],
     ],
 
     '[address]' =>
