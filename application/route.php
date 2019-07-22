@@ -47,7 +47,6 @@ return [
         'collectDelete'             => ['api/collect/collectDelete',    ['method' => 'POST']],
         'collectDeleteAll'          => ['api/collect/collectDeleteAll', ['method' => 'POST']],
         'removeToCart'              => ['api/collect/removeToCart',     ['method' => 'POST']],
-        'ifCollect'                 => ['api/collect/ifCollect',     ['method' => 'POST']],
     ],
 
     '[evaluate]' =>
@@ -62,7 +61,7 @@ return [
     '[book]'   =>
     [
         'bookList/:type_id'         => ['api/book/bookList',        ['method' => 'GET']],
-        'bookDetail/:book_id'       => ['api/book/bookDetail',      ['method' => 'GET']],
+        'bookDetail'                => ['api/book/bookDetail',      ['method' => 'POST']],
         'bookType'                  => ['api/book/bookType',        ['method' => 'GET']],
         'evaluateList/:book_id'     => ['api/book/evaluateList',    ['method' => 'GET']],
         'bookFind/:name'            => ['api/book/bookFind',        ['method' => 'GET']],
