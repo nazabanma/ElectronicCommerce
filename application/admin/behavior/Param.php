@@ -29,7 +29,7 @@ class Param
         $reflection = new \ReflectionMethod($class, $method);
         //特殊情况:如果action使用Request $request传参,则跳过验证
         $funcParam = $reflection->getParameters();
-        if ($funcParam[0]->name == 'request') {
+        if (empty($funcParam) || $funcParam[0]->name == 'request') {
             return;
         }
         //检测所有的必须参数
@@ -38,7 +38,6 @@ class Param
             $value = $params[$funcParam[$i]->name];
             //如果为空或者为'',则抛出异常
             if (is_null($value) || $value == '') {
-                dump('test');
                 throw new InvalidArgumentException('Necessary param ' . $funcParam[$i]->name . ' is null', 404);
             }
         }
