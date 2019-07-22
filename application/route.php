@@ -27,11 +27,15 @@ return [
     ],
     '[admin]' =>
     [
-        'login/:admin_id/:pwd'       => ['admin/user/login',            ['method' => 'POST']],
+        'login'                         => ['admin/user/login',            ['method' => 'POST']],
+        'userList'                      => ['admin/user/userList',         ['method' => 'GET']],
+        'findUser/:user_id'             => ['admin/user/findUser',         ['method' => 'GET']],
+        'delUser'                       => ['admin/user/delUser',           ['method' => 'POST']],
     ],
     '[user]' =>
     [
         'userInfo/:user_id'          => ['api/user/userInfo',           ['method' => 'GET']],
+
     ],
 
     '[address]' =>
@@ -47,7 +51,6 @@ return [
         'collectDelete'             => ['api/collect/collectDelete',    ['method' => 'POST']],
         'collectDeleteAll'          => ['api/collect/collectDeleteAll', ['method' => 'POST']],
         'removeToCart'              => ['api/collect/removeToCart',     ['method' => 'POST']],
-        'ifCollect'                 => ['api/collect/ifCollect',     ['method' => 'POST']],
     ],
 
     '[evaluate]' =>

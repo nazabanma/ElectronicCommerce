@@ -7,10 +7,6 @@ use think\Model;
 class User extends Model
 {
 
-    public function setPwdAttr($value)
-    {
-        return pwdEncode($value);
-    }
 
     /**
      * 查询用户列表
@@ -58,7 +54,7 @@ class User extends Model
         }
         return json([
             'code'  => 200,
-            'data'  => User::get($user_id),
+            'msg'   => 'delete success',
         ]);
     }
 }

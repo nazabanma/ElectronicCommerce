@@ -29,7 +29,7 @@ class Param
         $reflection = new \ReflectionMethod($class, $method);
         //特殊情况:如果action使用Request $request传参,则跳过验证
         $funcParam = $reflection->getParameters();
-        if ($funcParam[0]->name == 'request') {
+        if (empty($funcParam) || $funcParam[0]->name == 'request') {
             return;
         }
         //检测所有的必须参数
