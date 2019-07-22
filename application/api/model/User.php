@@ -3,6 +3,8 @@
 namespace app\api\model;
 
 use think\Model;
+use app\api\model\Address;
+use app\api\model\Collect;
 
 class User extends Model
 {
@@ -35,6 +37,8 @@ class User extends Model
     public function userInfo($user_id)
     {
         $result = User::get($user_id);
+        $result['collect']=Collect::where('user_id',$user_id)->count();
+        $result['address']=Address::where('user_id',$user_id)->count();
 
         if (is_null($result)) {
             return json([
