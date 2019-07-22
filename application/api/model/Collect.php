@@ -230,4 +230,33 @@ class Collect extends Model
             throw new Exception('insert failed', 500);
         }
     }
+
+    /**
+     *是否收藏过该本书
+     *
+     * @param String $book_id 
+     * @return json 书籍信息数组
+     */
+    public function ifCollect($book_id, $user_id)
+    {
+        if (is_null($book_id) || is_null($user_id)) {
+            return json([
+                'code' => 404,
+                'msg' => 'Necessary param is null'
+            ]);
+        }
+
+        $result = Collect::where('book_id', $book_id)->where('user_id', $user_id)->find();
+
+        if (empty($result))
+            return json([
+                'code' => '401',
+                'data' => '0'
+            ]);
+
+        return json([
+            'code' => '200',
+            'data' => '1'
+        ]);
+    }
 }

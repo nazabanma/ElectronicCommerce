@@ -66,4 +66,15 @@ class Collect extends Controller
     {
         return $this->Collect->removeToCart($request);
     }
+
+    /**
+     *是否收藏过该本书
+     *
+     * @param String $book_id 
+     * @return json 书籍信息数组
+     */
+    public function ifCollect($book_id, $user_id)
+    {
+        return $this->Collect->ifCollect($book_id, $user_id);
+    }
 }

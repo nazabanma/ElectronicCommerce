@@ -47,6 +47,7 @@ return [
         'collectDelete'             => ['api/collect/collectDelete',    ['method' => 'POST']],
         'collectDeleteAll'          => ['api/collect/collectDeleteAll', ['method' => 'POST']],
         'removeToCart'              => ['api/collect/removeToCart',     ['method' => 'POST']],
+        'ifCollect'                 => ['api/collect/ifCollect',     ['method' => 'POST']],
     ],
 
     '[evaluate]' =>
