@@ -15,10 +15,6 @@ class Book extends Model
     }
 
 
-   public function bookType()
-   {
-       return json(Config::get('book_type'));
-   }
 
 
     /**
