@@ -8,23 +8,28 @@ use InvalidArgumentException;
 
 class Param
 {
-    public function run(&$info)
+    public function run()
     {
         $this->paramAuth();
     }
 
     private function paramAuth()
     {
+        $params = Request::instance()->param();
         $module = Request::instance()->module();
         $controller = Request::instance()->controller();
         $class = 'app\\' . $module . '\\' . 'controller\\' . $controller;
         $method = Request::instance()->action();
         $reflection = new \ReflectionMethod($class, $method);
-        $allParam = $reflection->getParameters();
+        $funcParam = $reflection->getParameters();
+        if ($funcParam[0]->name == 'request') {
+            return;
+        }
         for ($i = 0; $i < $reflection->getNumberOfRequiredParameters(); $i++) {
-            $value = $_REQUEST[$allParam[$i]->name];
+            $value = $params[$funcParam[$i]->name];
             if (is_null($value) || $value == '') {
-                throw new InvalidArgumentException('Necessary param ' . $allParam[$i]->name . ' is null', 404);
+                dump('test');
+                throw new InvalidArgumentException('Necessary param ' . $funcParam[$i]->name . ' is null', 404);
             }
         }
     }

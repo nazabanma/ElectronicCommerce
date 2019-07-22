@@ -1,6 +1,8 @@
 <?php
 //配置文件
 return [
+    //异常解决方案
+    'exception_handle'       => '\\app\\admin\\common\\exception\\Http',
     // 是否强制使用路由
     'url_route_must'         => false,
     'book_type'              => [

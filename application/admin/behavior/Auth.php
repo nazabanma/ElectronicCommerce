@@ -8,7 +8,7 @@ use app\admin\model\ViewAdminPower;
 
 class Auth
 {
-    public function run(&$info)
+    public function run()
     {
         $this->adminAuth();
     }
