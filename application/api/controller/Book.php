@@ -29,10 +29,10 @@ class Book extends Controller
      * @param String $book_id 
      * @return json 书籍信息数组
      */
-    public function bookDetail($book_id)
+    public function bookDetail($book_id,$user_id)
     {
         $model = new ViewBookDetail();
-        return $model->bookDetail($book_id);
+        return $model->bookDetail($book_id,$user_id);
     }
 
     /**

@@ -38,7 +38,6 @@ class Param
             $value = $params[$funcParam[$i]->name];
             //如果为空或者为'',则抛出异常
             if (is_null($value) || $value == '') {
-                dump('test');
                 throw new InvalidArgumentException('Necessary param ' . $funcParam[$i]->name . ' is null', 404);
             }
         }

@@ -47,20 +47,22 @@ return [
         'collectDelete'             => ['api/collect/collectDelete',    ['method' => 'POST']],
         'collectDeleteAll'          => ['api/collect/collectDeleteAll', ['method' => 'POST']],
         'removeToCart'              => ['api/collect/removeToCart',     ['method' => 'POST']],
+        'ifCollect'                 => ['api/collect/ifCollect',     ['method' => 'POST']],
     ],
 
     '[evaluate]' =>
     [
-        'evaluate'                  => ['api/evaluate/evaluate',        ['method' => 'POST']],
-        'evaluateLike'              => ['api/evaluate/evaluateLike',    ['method' => 'POST']],
-        'evaluateList'              => ['api/evaluate/evaluateList',    ['method' => 'POST']],
-        'evaluateDelete'            => ['api/evaluate/evaluateDelete',    ['method' => 'POST']],
+        'evaluate'                  => ['api/evaluate/evaluate',             ['method' => 'POST']],
+        'evaluateLike'              => ['api/evaluate/evaluateLike',         ['method' => 'POST']],
+        'evaluateList'              => ['api/evaluate/evaluateList',         ['method' => 'POST']],
+        'evaluateDelete'            => ['api/evaluate/evaluateDelete',       ['method' => 'POST']],
+        'evaluateDeleteAll'         => ['api/evaluate/evaluateDeleteAll',    ['method' => 'POST']],
     ],
 
     '[book]'   =>
     [
         'bookList/:type_id'         => ['api/book/bookList',        ['method' => 'GET']],
-        'bookDetail/:book_id'       => ['api/book/bookDetail',      ['method' => 'GET']],
+        'bookDetail'                => ['api/book/bookDetail',      ['method' => 'POST']],
         'bookType'                  => ['api/book/bookType',        ['method' => 'GET']],
         'evaluateList/:book_id'     => ['api/book/evaluateList',    ['method' => 'GET']],
         'bookFind/:name'            => ['api/book/bookFind',        ['method' => 'GET']],

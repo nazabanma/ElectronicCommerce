@@ -44,6 +44,8 @@ class ViewBookEvaluate extends Model
                 'img'           => $evaluateItem['img'],
                 'if_anonymous'  =>$evaluateItem['if_anonymous'],
                 'head_img'      =>$evaluateItem['head_img'],
+                'user_id'       =>$evaluateItem['user_id'],
+                'if_me'         =>$evaluateItem['user_id']==$user_id?1:0
             ];
             if ($prev > 0 && $prev != $evaluateItem['order_item_id']) {
                 array_push($data, $this->getEvaluateItem($comment));
@@ -78,6 +80,8 @@ class ViewBookEvaluate extends Model
             'img'               => $comment[0]['img'],
             'if_anonymous'      => $comment[0]['if_anonymous'],
             'head_img'          => $comment[0]['head_img'],
+            'user_id'           => $comment[0]['user_id'],
+            'if_me'             => $comment[0]['if_me'],
             'comment'           => array_splice($comment, 1),
         ];
     }
