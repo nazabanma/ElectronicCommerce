@@ -51,10 +51,11 @@ return [
 
     '[evaluate]' =>
     [
-        'evaluate'                  => ['api/evaluate/evaluate',        ['method' => 'POST']],
-        'evaluateLike'              => ['api/evaluate/evaluateLike',    ['method' => 'POST']],
-        'evaluateList'              => ['api/evaluate/evaluateList',    ['method' => 'POST']],
-        'evaluateDelete'            => ['api/evaluate/evaluateDelete',    ['method' => 'POST']],
+        'evaluate'                  => ['api/evaluate/evaluate',             ['method' => 'POST']],
+        'evaluateLike'              => ['api/evaluate/evaluateLike',         ['method' => 'POST']],
+        'evaluateList'              => ['api/evaluate/evaluateList',         ['method' => 'POST']],
+        'evaluateDelete'            => ['api/evaluate/evaluateDelete',       ['method' => 'POST']],
+        'evaluateDeleteAll'         => ['api/evaluate/evaluateDeleteAll',    ['method' => 'POST']],
     ],
 
     '[book]'   =>

@@ -83,5 +83,37 @@ class Evaluate extends Model
 
     }
 
+     /**
+     * 删除评论
+     *
+     * @param Request $request
+     * @return json 删除结果
+     */
+    public function evaluateDeleteAll($order_item_id)
+    {
+
+           if (is_null($order_item_id)) {
+            return json([
+                'code'  => '404',
+                'msg'   => 'Necessary param is null'
+            ]);
+        }
+
+
+        $result = Evaluate::where('order_item_id',$order_item_id)->delete();
+        if ($result ===1) {
+            return json([
+                "statusCode"    => 200,
+                "msg"           => "删除成功",
+            ]);
+        }
+        return json([
+            'code'  => 500,
+                'msg'   => 'delete failed'
+        ]);
+
+
+    }
+
 
 }

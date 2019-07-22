@@ -60,5 +60,19 @@ class Evaluate extends Controller
 
     }
 
+      /**
+     * 删除评价
+     *
+     * @param Request $request
+     * @return json 删除结果
+     */
+    public function evaluateDeleteAll($order_item_id)
+    {
+        $model = new \app\api\model\Evaluate();
+        return $model->evaluateDeleteAll($order_item_id);
+          
+    }
+
+
 
 }
