@@ -23,6 +23,21 @@ class Book extends Controller
         return $model->bookList($type_id);
     }
 
+   /**
+     * 根据页码查询
+     *
+     * @param Request $request
+     * @return json 书本数组
+     */
+    public function bookListByPage($page,$type_id=0)
+    {
+        $model = new ViewBookList();
+        return $model->bookListByPage($page,$type_id);
+    }
+
+
+    
+
     /**
      *根据书本id返回某本书信息
      *

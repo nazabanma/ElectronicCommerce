@@ -68,6 +68,8 @@ return [
         'bookAdd'                   => ['api/book/bookAdd',         ['method' => 'POST']],
         'bookEdit'                  => ['api/book/bookEdit',        ['method' => 'POST']],
         'bookDelete'                => ['api/book/bookDelete',      ['method' => 'POST']],
+        'bookListByPage'            => ['api/book/bookListByPage',  ['method' => 'POST']],
+        
 
 
     ],

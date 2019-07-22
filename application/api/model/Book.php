@@ -7,15 +7,19 @@ use think\Model;
 class Book extends Model
 {
 
-    public function bookType()
-    {
-        return $this->hasOne("BookType", 'book_type_id');
-    }
+    
 
     public function collect()
     {
         return $this->hasMany("Collect", "book_id");
     }
+
+
+   public function bookType()
+   {
+       return json(Config::get('book_type'));
+   }
+
 
     /**
      * 添加书本
