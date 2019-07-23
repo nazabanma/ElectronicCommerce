@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\admin\model\Admin;
 use app\admin\common\base\BaseController;
+use think\Request;
 
 class User extends BaseController
 {
@@ -26,9 +27,9 @@ class User extends BaseController
      *
      * @return json
      */
-    public function userList()
+    public function userList($page)
     {
-        return \app\admin\model\User::userList();
+        return \app\admin\model\User::userList($page);
     }
 
     /**
@@ -51,5 +52,12 @@ class User extends BaseController
     public static function delUser($user_id)
     {
         return \app\admin\model\User::delUser($user_id);
+    }
+
+
+    public function findUserFuzzy(Request $request)
+    {
+        $model = new \app\admin\model\User();
+        return $model->findUserFuzzy($request);
     }
 }

@@ -3,6 +3,7 @@
 namespace app\admin\model;
 
 use think\Model;
+use think\Request;
 
 class User extends Model
 {
@@ -13,11 +14,12 @@ class User extends Model
      *
      * @return json
      */
-    public static function userList()
+    public static function userList($page)
     {
+        $model = new User();
         return json([
             'code'  => 200,
-            'data'  => User::all(),
+            'data'  => $model->limit(($page - 1) * 10, 10)->select(),
         ]);
     }
 
@@ -29,10 +31,24 @@ class User extends Model
      */
     public static function findUser($user_id)
     {
-        paramValidata($user_id);
         return json([
             'code'  => 200,
             'data'  => User::get($user_id),
+        ]);
+    }
+
+
+    public static function findUserFuzzy(Request $request)
+    {
+        $user_id = $request->param('user_id');
+        $nick_name = $request->param('nick_name');
+        $User = new User();
+        $data = $User->where('user_id', 'like', '%' . $user_id . '%')
+            ->where('nick_name', 'like', '%' . $nick_name . '%')
+            ->select();
+        return json([
+            'code'  => 200,
+            'data'  => $data,
         ]);
     }
 

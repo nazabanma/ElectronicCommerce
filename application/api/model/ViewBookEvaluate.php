@@ -13,19 +13,25 @@ class ViewBookEvaluate extends Model
      * @param String $book_id
      * @return json
      */
-    public function evaluateList($book_id,$user_id)
+    public function evaluateList($book_id, $user_id)
     {
-        if (is_null($book_id)||is_null($user_id)) {
+        if (is_null($book_id) || is_null($user_id)) {
             return json([
                 'code' => '404',
                 'msg' => 'book_id is null'
             ]);
         }
-          //查询点赞
-        $oldLike=EvaluateLike::where('user_id',$user_id)->column('evaluate_id');
+        //查询点赞
+        $oldLike = EvaluateLike::where('user_id', $user_id)->column('evaluate_id');
 
         $evaluate = new ViewBookEvaluate();
         $evaluateList = $evaluate->where('book_id', $book_id)->select();
+        if (empty($evaluateList)) {
+            return json([
+                'code' => '404',
+                'msg' =>   "无评价",
+            ]);
+        }
         // 返回结果
         $data = [];
         // 对评价的评论的顺组
@@ -40,12 +46,12 @@ class ViewBookEvaluate extends Model
                 'time'          => $evaluateItem['evaluate_time'],
                 'order_item_id' => $evaluateItem['order_item_id'],
                 'like_count'    => EvaluateLike::where('evaluate_id', $evaluateItem['evaluate_id'])->count(),
-                'if_like'       =>in_array($evaluateItem['evaluate_id'],$oldLike)?1:0,
+                'if_like'       => in_array($evaluateItem['evaluate_id'], $oldLike) ? 1 : 0,
                 'img'           => $evaluateItem['img'],
-                'if_anonymous'  =>$evaluateItem['if_anonymous'],
-                'head_img'      =>$evaluateItem['head_img'],
-                'user_id'       =>$evaluateItem['user_id'],
-                'if_me'         =>$evaluateItem['user_id']==$user_id?1:0
+                'if_anonymous'  => $evaluateItem['if_anonymous'],
+                'head_img'      => $evaluateItem['head_img'],
+                'user_id'       => $evaluateItem['user_id'],
+                'if_me'         => $evaluateItem['user_id'] == $user_id ? 1 : 0
             ];
             if ($prev > 0 && $prev != $evaluateItem['order_item_id']) {
                 array_push($data, $this->getEvaluateItem($comment));

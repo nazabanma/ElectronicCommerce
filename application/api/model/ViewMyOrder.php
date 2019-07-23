@@ -7,12 +7,13 @@ use think\Model;
 class ViewMyOrder extends Model
 {
     /**
-     * 查询用户的所有订单
+     * 根据状态id查询用户订单
      *
      * @param String $user_id
+     * @param String $state_id
      * @return json 订单信息
      */
-    public function myOrder($user_id)
+    public function myOrder($user_id, $state_id = 'all')
     {
         if (is_null($user_id)) {
             return json([
@@ -21,12 +22,18 @@ class ViewMyOrder extends Model
             ]);
         }
         $Order = new ViewMyOrder();
-        $data = $Order->where('user_id', $user_id)->where('flag', '0')->select();
+        $data = [];
+        if ($state_id == 'all') {
+            $data = $Order->where('user_id', $user_id)->where('flag', '0')->select();
+        } else {
+            $data = $Order->where('user_id', $user_id)->where('flag', '0')->where('order_state_id', $state_id)->select();
+        }
         return json([
             'code' => '200',
             'data' => $data
         ]);
     }
+
 
 
     /**

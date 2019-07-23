@@ -17,16 +17,16 @@ class Order extends Controller
         $this->Order = new \app\api\model\Order();
     }
 
-     /**
+    /**
      * 查询所有订单
      *
      * @param String $user_id
      * @return json 订单信息
      */
-    public function myOrder($user_id)
+    public function myOrder($user_id, $state_id = 'all')
     {
         $model = new ViewMyOrder();
-        return $model->myOrder($user_id);
+        return $model->myOrder($user_id, $state_id);
     }
 
     public function allOrder($user_id)
@@ -89,9 +89,4 @@ class Order extends Controller
     {
         return $this->Order->orderCancel($request);
     }
-
-    
-
-
-    
 }

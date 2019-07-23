@@ -28,9 +28,17 @@ return [
     '[admin]' =>
     [
         'login'                         => ['admin/user/login',            ['method' => 'POST']],
-        'userList'                      => ['admin/user/userList',         ['method' => 'GET']],
+        'userList/:page'                => ['admin/user/userList',         ['method' => 'GET']],
         'findUser/:user_id'             => ['admin/user/findUser',         ['method' => 'GET']],
-        'delUser'                       => ['admin/user/delUser',           ['method' => 'POST']],
+        'findUserFuzzy'                 => ['admin/user/findUserFuzzy',    ['method' => 'POST']],
+        'delUser'                       => ['admin/user/delUser',          ['method' => 'POST']],
+
+
+        'bookList/:page'                => ['admin/book/bookList',      ['method' => 'GET']],
+        'findBookFuzzy'                 => ['admin/book/findBookFuzzy', ['method' => 'POST']],
+        'bookDetail/:book_id'           => ['admin/book/bookDetail',    ['method' => 'GET']],
+        'delBook'                       => ['admin/book/delBook',       ['method' => 'POST']],
+        'updateBook'                    => ['admin/book/updateBook',    ['method' => 'POST']],
     ],
     '[user]' =>
     [
@@ -46,7 +54,7 @@ return [
 
     '[collect]' =>
     [
-        'collect/:user_id'          => ['api/collect/myCollect',        ['method' => 'GET']],
+        'collect'                   => ['api/collect/myCollect',        ['method' => 'POST']],
         'collectAdd'                => ['api/collect/collectAdd',       ['method' => 'POST']],
         'collectDelete'             => ['api/collect/collectDelete',    ['method' => 'POST']],
         'collectDeleteAll'          => ['api/collect/collectDeleteAll', ['method' => 'POST']],
@@ -68,7 +76,7 @@ return [
         'bookDetail'                => ['api/book/bookDetail',      ['method' => 'POST']],
         'bookType'                  => ['api/book/bookType',        ['method' => 'GET']],
         'evaluateList/:book_id'     => ['api/book/evaluateList',    ['method' => 'GET']],
-        'bookFind/:name'            => ['api/book/bookFind',        ['method' => 'GET']],
+        'bookFind'            => ['api/book/bookFind',              ['method' => 'POST']],
         'bookAdd'                   => ['api/book/bookAdd',         ['method' => 'POST']],
         'bookEdit'                  => ['api/book/bookEdit',        ['method' => 'POST']],
         'bookDelete'                => ['api/book/bookDelete',      ['method' => 'POST']],
@@ -87,13 +95,13 @@ return [
     ],
     '[order]'   =>
     [
-        'order'                     => ['api/order/allOrder',           ['method' => 'POST']],
+        'allOrder'                  => ['api/order/allOrder',           ['method' => 'POST']],
         'orderCreate'               => ['api/order/orderCreate',        ['method' => 'POST']],
         'orderCancel'               => ['api/order/orderCancel',        ['method' => 'POST']],
         'orderUpdate'               => ['api/order/orderUpdate',        ['method' => 'POST']],
         'orderDelete'               => ['api/order/orderDelete',        ['method' => 'POST']],
         'orderStateUpdate'          => ['api/order/orderStateUpdate',   ['method' => 'POST']],
-        'order/:user_id'            => ['api/order/myOrder',            ['method' => 'GET']],
+        'order'                     => ['api/order/myOrder',            ['method' => 'POST']],
 
     ]
 
