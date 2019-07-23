@@ -7,6 +7,7 @@ use think\Config;
 use app\api\model\ViewBookList;
 use app\api\model\ViewBookDetail;
 use app\api\model\ViewBookEvaluate;
+use app\api\model\BookType;
 
 class Book extends Controller
 {
@@ -58,11 +59,8 @@ class Book extends Controller
      */
     public function bookType()
     {
-        $bookTypeList = Config::load('config.php')['book_type'];
-        return json([
-            'code' => '200',
-            'data' => $bookTypeList
-        ]);
+        $model = new BookType();
+        return $model->bookType();
     }
 
 

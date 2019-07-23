@@ -7,14 +7,10 @@ use think\Model;
 class Book extends Model
 {
 
-    
-
     public function collect()
     {
         return $this->hasMany("Collect", "book_id");
     }
-
-
 
 
     /**

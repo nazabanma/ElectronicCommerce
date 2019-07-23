@@ -26,6 +26,15 @@ class ViewBookEvaluate extends Model
 
         $evaluate = new ViewBookEvaluate();
         $evaluateList = $evaluate->where('book_id', $book_id)->select();
+
+        if(empty($evaluateList))
+        {
+            return json([
+                'code' => '404',
+                'msg' =>   "无评价",
+            ]);
+        }
+
         // 返回结果
         $data = [];
         // 对评价的评论的顺组
