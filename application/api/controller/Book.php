@@ -7,6 +7,7 @@ use think\Config;
 use app\api\model\ViewBookList;
 use app\api\model\ViewBookDetail;
 use app\api\model\ViewBookEvaluate;
+use app\api\model\BookType;
 
 class Book extends Controller
 {
@@ -22,6 +23,21 @@ class Book extends Controller
         $model = new ViewBookList();
         return $model->bookList($type_id);
     }
+
+   /**
+     * 根据页码查询
+     *
+     * @param Request $request
+     * @return json 书本数组
+     */
+    public function bookListByPage($page,$type_id=0)
+    {
+        $model = new ViewBookList();
+        return $model->bookListByPage($page,$type_id);
+    }
+
+
+    
 
     /**
      *根据书本id返回某本书信息
@@ -43,11 +59,8 @@ class Book extends Controller
      */
     public function bookType()
     {
-        $bookTypeList = Config::load('config.php')['book_type'];
-        return json([
-            'code' => '200',
-            'data' => $bookTypeList
-        ]);
+        $model = new BookType();
+        return $model->bookType();
     }
 
 
