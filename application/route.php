@@ -39,6 +39,7 @@ return [
         'bookDetail/:book_id'           => ['admin/book/bookDetail',    ['method' => 'GET']],
         'delBook'                       => ['admin/book/delBook',       ['method' => 'POST']],
         'updateBook'                    => ['admin/book/updateBook',    ['method' => 'POST']],
+        'upload'                        => ['admin/admin/upload',    ['method' => 'POST']],
     ],
     '[user]' =>
     [
@@ -81,7 +82,7 @@ return [
         'bookEdit'                  => ['api/book/bookEdit',        ['method' => 'POST']],
         'bookDelete'                => ['api/book/bookDelete',      ['method' => 'POST']],
         'bookListByPage'            => ['api/book/bookListByPage',  ['method' => 'POST']],
-        
+
 
 
     ],
