@@ -11,27 +11,7 @@ class Book extends Model
 
 
 
-    public function upload(Request $request)
-    {
-        $file = request()->file('mood_pic');
 
-        // 移动到框架应用根目录/public/uploads/ 目录下
-        if ($file) {
-            $info = $file->move(ROOT_PATH . 'public' . DS . 'uploads');
-            if ($info) {
-                // 成功上传后 获取上传信息
-                // 输出 jpg
-                echo $info->getExtension();
-                // 输出 20160820/42a79759f284b767dfcb2a0197904287.jpg
-                echo $info->getSaveName();
-                // 输出 42a79759f284b767dfcb2a0197904287.jpg
-                echo $info->getFilename();
-            } else {
-                // 上传失败获取错误信息
-                echo $file->getError();
-            }
-        }
-    }
 
     public function findBookFuzzy(Request $request)
     {
@@ -82,6 +62,48 @@ class Book extends Model
         return json([
             'code'  => 200,
             'msg'   => 'success'
+        ]);
+    }
+
+
+    public function upload(Request $request)
+    {
+        $file = request()->file('img');
+        $baseUrl = ROOT_PATH . 'public' . DS . 'uploads';
+        $imgDomain = 'http://admin.wyxs.talesrunner.org/uploads/';
+        // 移动到框架应用根目录/public/uploads/ 目录下
+        if ($file) {
+            $info = $file->move($baseUrl);
+            if ($info) {
+                // 成功上传后 获取上传信息
+                return json([
+                    'code'  => 200,
+                    'data'   => $imgDomain . $info->getSaveName()
+                ]);
+            } else {
+                return json([
+                    'code'  => 500,
+                    'msg'   => $file->getError()
+                ]);
+            }
+        }
+    }
+
+
+    public function addBook(Request $request)
+    {
+        $data = $request->param();
+        $Book = new Book();
+        $res = $Book->save($data);
+        if ($res == 1) {
+            return json([
+                'code'  => 200,
+                'msg'   => 'success'
+            ]);
+        }
+        return json([
+            'code'  => 500,
+            'msg'   => 'failed'
         ]);
     }
 }

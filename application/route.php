@@ -34,12 +34,23 @@ return [
         'delUser'                       => ['admin/user/delUser',          ['method' => 'POST']],
 
 
+
+        'upload'                        => ['admin/admin/upload',    ['method' => 'POST']],
+
+
         'bookList/:page'                => ['admin/book/bookList',      ['method' => 'GET']],
         'findBookFuzzy'                 => ['admin/book/findBookFuzzy', ['method' => 'POST']],
         'bookDetail/:book_id'           => ['admin/book/bookDetail',    ['method' => 'GET']],
         'delBook'                       => ['admin/book/delBook',       ['method' => 'POST']],
         'updateBook'                    => ['admin/book/updateBook',    ['method' => 'POST']],
-        'upload'                        => ['admin/admin/upload',    ['method' => 'POST']],
+        'addBook'                       => ['admin/book/addBook',       ['method' => 'POST']],
+
+
+        'orderList/:page'                       => ['admin/order/orderList',       ['method' => 'GET']],
+        'findOrderFuzzy'                       => ['admin/order/findOrderFuzzy',        ['method' => 'POST']],
+        'getOrderItem/:order_id'                       => ['admin/order/getOrderItem',        ['method' => 'GET']],
+
+
     ],
     '[user]' =>
     [

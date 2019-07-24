@@ -46,4 +46,8 @@ class Book extends BaseController
     {
         return $this->Book->upload($request);
     }
+    public function addBook(Request $request)
+    {
+        return $this->Book->addBook($request);
+    }
 }
