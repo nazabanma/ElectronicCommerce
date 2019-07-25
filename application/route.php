@@ -28,6 +28,7 @@ return [
     '[admin]' =>
     [
         'login'                         => ['admin/user/login',            ['method' => 'POST']],
+        'logOut'                        => ['admin/user/logOut',           ['method' => 'GET']],
         'userList/:page'                => ['admin/user/userList',         ['method' => 'GET']],
         'findUser/:user_id'             => ['admin/user/findUser',         ['method' => 'GET']],
         'findUserFuzzy'                 => ['admin/user/findUserFuzzy',    ['method' => 'POST']],
@@ -46,9 +47,10 @@ return [
         'addBook'                       => ['admin/book/addBook',       ['method' => 'POST']],
 
 
-        'orderList/:page'                       => ['admin/order/orderList',       ['method' => 'GET']],
-        'findOrderFuzzy'                       => ['admin/order/findOrderFuzzy',        ['method' => 'POST']],
-        'getOrderItem/:order_id'                       => ['admin/order/getOrderItem',        ['method' => 'GET']],
+        'orderList/:page'               => ['admin/order/orderList',            ['method' => 'GET']],
+        'findOrderFuzzy'                => ['admin/order/findOrderFuzzy',       ['method' => 'POST']],
+        'getOrderItem/:order_id'        => ['admin/order/getOrderItem',         ['method' => 'GET']],
+        'updateOrderState'              => ['admin/order/updateOrderState',     ['method' => 'POST']],
 
 
     ],

@@ -33,4 +33,9 @@ class Order extends BaseController
     {
         return $this->ViewAdminOrderItem->getOrderItem($order_id);
     }
+
+    public function updateOrderState($order_id, $order_state_id)
+    {
+        return $this->Order->updateOrderState($order_id, $order_state_id);
+    }
 }

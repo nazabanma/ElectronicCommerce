@@ -22,6 +22,15 @@ class User extends BaseController
         return $model->login($admin_id, $pwd);
     }
 
+
+    public function logOut()
+    {
+        session('uid', null);
+        return json([
+            'code'  => 200,
+            'msg'   => 'success',
+        ]);
+    }
     /**
      * 查询用户列表
      *

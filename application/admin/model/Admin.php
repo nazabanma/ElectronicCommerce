@@ -16,8 +16,6 @@ class Admin extends Model
      */
     public function login($admin_id, $pwd)
     {
-        paramValidata($admin_id);
-        paramValidata($pwd);
         $model = new Admin();
         $exits = $model->where('admin_id', $admin_id)
             ->where('pwd', pwdEncode($pwd))
