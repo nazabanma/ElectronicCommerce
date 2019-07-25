@@ -25,7 +25,7 @@ class User extends BaseController
 
     public function logOut()
     {
-        session('uid', null);
+        session('aid', null);
         return json([
             'code'  => 200,
             'msg'   => 'success',
