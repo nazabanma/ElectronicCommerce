@@ -8,6 +8,12 @@ use think\Request;
 class ViewAdminOrder extends Model
 {
 
+    /**
+     * 订单列表
+     *
+     * @param String $page
+     * @return json
+     */
     public function orderList($page)
     {
         $model = new ViewAdminOrder();
@@ -19,6 +25,12 @@ class ViewAdminOrder extends Model
         ]);
     }
 
+    /**
+     * 模糊查询订单
+     *
+     * @param Request $request
+     * @return json
+     */
     public function findOrderFuzzy(Request $request)
     {
         $order_id = $request->param('order_id');

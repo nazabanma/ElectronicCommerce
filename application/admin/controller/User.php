@@ -22,7 +22,11 @@ class User extends BaseController
         return $model->login($admin_id, $pwd);
     }
 
-
+    /**
+     * 用户退出,删除session
+     *
+     * @return json
+     */
     public function logOut()
     {
         session('aid', null);
@@ -31,6 +35,7 @@ class User extends BaseController
             'msg'   => 'success',
         ]);
     }
+
     /**
      * 查询用户列表
      *
@@ -63,7 +68,12 @@ class User extends BaseController
         return \app\admin\model\User::delUser($user_id);
     }
 
-
+    /**
+     * 模糊查询
+     *
+     * @param Request $request
+     * @return json
+     */
     public function findUserFuzzy(Request $request)
     {
         $model = new \app\admin\model\User();

@@ -37,7 +37,12 @@ class User extends Model
         ]);
     }
 
-
+    /**
+     * 模糊查询
+     *
+     * @param Request $request
+     * @return json
+     */
     public static function findUserFuzzy(Request $request)
     {
         $user_id = $request->param('user_id');
@@ -62,7 +67,7 @@ class User extends Model
     {
         paramValidata($user_id);
         $res = User::destroy($user_id);
-        if ($res === false) {
+        if ($res == 0) {
             return json([
                 'code'  => 500,
                 'msg'   => 'delete failed'

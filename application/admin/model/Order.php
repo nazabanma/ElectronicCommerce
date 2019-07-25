@@ -7,6 +7,13 @@ use think\Model;
 
 class Order extends Model
 {
+    /**
+     * 更新订单状态
+     *
+     * @param String $order_id
+     * @param String $order_state_id
+     * @return json
+     */
     public function updateOrderState($order_id, $order_state_id)
     {
         $model = Order::get($order_id);

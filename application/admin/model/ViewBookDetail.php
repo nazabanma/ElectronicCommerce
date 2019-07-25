@@ -7,6 +7,12 @@ use think\Model;
 class ViewBookDetail extends Model
 {
 
+    /**
+     * 书本详情
+     *
+     * @param String $book_id
+     * @return json
+     */
     public function bookDetail($book_id)
     {
         $model = new ViewBookDetail();
@@ -16,6 +22,12 @@ class ViewBookDetail extends Model
         ]);
     }
 
+    /**
+     * 书本列表
+     *
+     * @param String $page
+     * @return json
+     */
     public function bookList($page)
     {
         $model = new ViewBookDetail();

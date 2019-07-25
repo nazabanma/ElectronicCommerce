@@ -9,10 +9,12 @@ use think\Config;
 class Book extends Model
 {
 
-
-
-
-
+    /**
+     * 模糊查询书本
+     *
+     * @param Request $request
+     * @return json
+     */
     public function findBookFuzzy(Request $request)
     {
         $book_id = $request->param('book_id');
@@ -31,6 +33,12 @@ class Book extends Model
         ]);
     }
 
+    /**
+     * 删除书本
+     *
+     * @param String $book_id
+     * @return json
+     */
     public function delBook($book_id)
     {
         $res = Book::destroy($book_id);
@@ -46,6 +54,12 @@ class Book extends Model
         ]);
     }
 
+    /**
+     * 更新书本信息
+     *
+     * @param Request $request
+     * @return json
+     */
     public function updateBook(Request $request)
     {
         $data = $request->param();
@@ -65,7 +79,12 @@ class Book extends Model
         ]);
     }
 
-
+    /**
+     * 上传图片
+     *
+     * @param Request $request
+     * @return json
+     */
     public function upload(Request $request)
     {
         $file = request()->file('img');
@@ -89,7 +108,12 @@ class Book extends Model
         }
     }
 
-
+    /**
+     * 添加书本
+     *
+     * @param Request $request
+     * @return String
+     */
     public function addBook(Request $request)
     {
         $data = $request->param();
