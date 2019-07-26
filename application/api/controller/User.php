@@ -29,4 +29,26 @@ class User extends Controller
     {
         return $this->User->userInfo($user_id);
     }
+
+    /**
+     * 添加用户
+     *
+     * @param Request $request
+     * @return json 添加结果
+     */
+    public function userAdd(Request $request)
+    {
+        return $this->User->userAdd($request);
+    }
+
+    /**
+     * 根据openid查找用户
+     *
+     * @param Request $request
+     * @return json 添加结果
+     */
+    public function userFind($id)
+    {
+        return $this->User->userFind($id);
+    }
 }

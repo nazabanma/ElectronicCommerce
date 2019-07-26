@@ -11,7 +11,7 @@ class Evaluate extends Controller
 
 
  /**
-     * 评价订单，也可用于对评价的评论
+     * 对评价的评论
      *
      * @param Request $request
      * @return json 评价结果
@@ -71,6 +71,31 @@ class Evaluate extends Controller
         $model = new \app\api\model\Evaluate();
         return $model->evaluateDeleteAll($order_item_id);
           
+    }
+
+     /**
+     * 评价订单
+     *
+     * @param Request $request
+     * @return json 评价结果
+     */
+    public function evaluateOrder(Request $request)
+    {
+        $model = new \app\api\model\Evaluate();
+        return $model->evaluateOrder($request);
+          
+    }
+
+    /**
+     * 用于上传图片
+     *
+     * @param Request $request
+     * @return json 上传结果
+     */
+    public function upLoadImg(Request $request)
+    {
+        $model = new \app\api\model\Evaluate();
+        return $model->upLoadImg($request);
     }
 
 

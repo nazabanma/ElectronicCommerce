@@ -1,34 +1,35 @@
 <?php
 
 namespace app\api\model;
+
 use think\Request;
 use think\Model;
-class Evaluate extends Model
-{ 
 
-      /**
-     * 评价订单，也可用于对评价的评论
+class Evaluate extends Model
+{
+
+    /**
+     * 对评价的评论
      *
      * @param Request $request
      * @return json 评价结果
      */
     public function evaluate(Request $request)
     {
-           $order_item_id=$request->param('order_item_id');     //订单项id
-           $user_id=$request->param('user_id');                //用户id
-           $content=$request->param('content');                 //评价内容
-           $time=$request->param('time'); 
-           $if_anonymous=$request->param('if_anonymous');
-           $img='url';                                          //需要一个接收图片的方法并返回url
+        $order_item_id = $request->param('order_item_id');     //订单项id
+        $user_id = $request->param('user_id');                //用户id
+        $content = $request->param('content');                 //评价内容
+        $time = $request->param('time');
+        $if_anonymous = $request->param('if_anonymous');
 
-           if (is_null($order_item_id) || is_null($user_id)) {
+        if (is_null($order_item_id) || is_null($user_id)) {
             return json([
                 'code'  => '404',
                 'msg'   => 'Necessary param is null'
             ]);
         }
 
-           $evaluate = new Evaluate([
+        $evaluate = new Evaluate([
             'user_id'           => $user_id,
             'order_item_id'     => $order_item_id,
             'content'           => $content,
@@ -48,11 +49,9 @@ class Evaluate extends Model
             "statusCode"    => 200,
             "msg"           => "评价成功",
         ]);
-
-
     }
 
-     /**
+    /**
      * 删除评论
      *
      * @param Request $request
@@ -61,7 +60,7 @@ class Evaluate extends Model
     public function evaluateDelete($evaluate_id)
     {
 
-           if (is_null($evaluate_id)) {
+        if (is_null($evaluate_id)) {
             return json([
                 'code'  => '404',
                 'msg'   => 'Necessary param is null'
@@ -70,7 +69,7 @@ class Evaluate extends Model
 
 
         $result = Evaluate::destroy($evaluate_id);
-        if ($result ===1) {
+        if ($result === 1) {
             return json([
                 "statusCode"    => 200,
                 "msg"           => "删除成功",
@@ -78,13 +77,11 @@ class Evaluate extends Model
         }
         return json([
             'code'  => 500,
-                'msg'   => 'delete failed'
+            'msg'   => 'delete failed'
         ]);
-
-
     }
 
-     /**
+    /**
      * 删除评论
      *
      * @param Request $request
@@ -93,7 +90,7 @@ class Evaluate extends Model
     public function evaluateDeleteAll($order_item_id)
     {
 
-           if (is_null($order_item_id)) {
+        if (is_null($order_item_id)) {
             return json([
                 'code'  => '404',
                 'msg'   => 'Necessary param is null'
@@ -101,21 +98,116 @@ class Evaluate extends Model
         }
 
 
-        $result = Evaluate::where('order_item_id',$order_item_id)->delete();
-        if ($result===false) {
+        $result = Evaluate::where('order_item_id', $order_item_id)->delete();
+        if ($result === false) {
             return json([
                 'code'  => 500,
                 'msg'   => 'delete failed'
-               
+
             ]);
         }
         return json([
             "statusCode"    => 200,
             "msg"           => "删除成功",
         ]);
+    }
 
+    /**
+     * 评价订单
+     *
+     * @param Request $request
+     * @return json 评价结果
+     */
+    public function evaluateOrder(Request $request)
+    {
+        $user_id = $request->param('user_id');  //用户id
+        $evaluate_list = json_decode($request->param('evaluate_list'), true);
+        $if_anonymous = $request->param('if_anonymous'); //是否匿名
+        if (empty($evaluate_list)) {
+            return json([
+                'code'  => '404',
+                'msg'   => 'Necessary param is null'
+            ]);
+        }
 
+        try {
+            Db::startTrans();
+            foreach ($evaluate_list as $item) {
+
+                $this->createEvaluateItem($user_id, $item,$if_anonymous);
+            }
+
+            Db::commit();
+        } catch (Exception $th) {
+            Db::rollback();
+            return json([
+                'code'  => $th->getCode(),
+                'msg'   => $th->getMessage()
+            ]);
+        }
+        return json([
+            "statusCode"    => 200,
+            "msg"           => "评价成功",
+        ]);
+    }
+
+    /**
+     * 
+     * //创建购物车项
+     * @param String $item
+     * @param String $user_id
+     * @return void
+     */
+    protected function createEvaluateItem($user_id, $item,$if_anonymous)
+    {
+
+        $evaluateItem = new Evaluate([
+            'user_id'           => $user_id,
+            'order_item_id'     => $item['order_item_id'],
+            'content'           => $item['content'],
+            'img'               => $item['img'],
+            'if_anonymous'      => $if_anonymous,
+            'evaluate_time'     => date("Y-m-d H:i:s"),
+
+        ]);
+
+        $result = $evaluateItem->save();
+        if ($result === false) {
+            throw new Exception('insert failed', 500);
+        }
     }
 
 
+
+    /**
+     * 用于上传图片
+     *
+     * @param Request $request
+     * @return json 上传结果
+     */
+    public function upLoadImg(Request $request)
+    {
+        $file = $request->file('file');
+        if ($file) {
+            $baseUrl = ROOT_PATH . 'public' . DS . 'upload';
+            $info = $file->move($baseUrl);
+            if ($info) {
+                $name = 'http://admin.wyxs.talesrunner.org/upload/' . $info->getSaveName();
+                return json([
+                    'code' => 200,
+                    'msg' => '图片上传成功',
+                    'name' => $name,
+                    'file' => $file
+                ]);
+            }
+            return json([
+                'code' => 500,
+                'msg' => '图片上传失败',
+            ]);
+        }
+        return json([
+            'code' => 500,
+            'msg' => '图片上传失败',
+        ]);
+    }
 }

@@ -59,7 +59,7 @@ class Order extends Model
             ]);
         }
         return json([
-            "statusCode"    => 200,
+            "code"          => 200,
             "msg"           => "创建订单成功",
             "order_id"      =>  $order_id                //返回订单id
         ]);
@@ -156,7 +156,7 @@ class Order extends Model
             ]);
         }
         return json([
-            "statusCode"    => 200,
+            "code"          => 200,
             "msg"           => "修改订单成功",
         ]);
     }
@@ -197,7 +197,7 @@ class Order extends Model
             ]);
         }
         return json([
-            "statusCode"    => 200,
+            "code"          => 200,
             "msg"           => "修改订单状态成功",
         ]);
     }
@@ -237,7 +237,7 @@ class Order extends Model
         }
 
         return json([
-            "statusCode"    => 200,
+            "code"          => 200,
             "msg"           => "修改订单状态成功",
         ]);
     }

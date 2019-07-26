@@ -50,4 +50,29 @@ class Address extends Model
             'msg' => 'success'
         ]);
     }
+
+     /**
+     * 添加地址
+     *
+     * @param Request $request
+     * @return String
+     */
+    public function addAddress(Request $request)
+    {
+        $data = $request->param();
+        $Address = new Address();
+        $res = $Address->save($data);
+        if ($res == 1) {
+            return json([
+                'code'  => 200,
+                'msg'   => 'success'
+            ]);
+        }
+        return json([
+            'code'  => 500,
+            'msg'   => 'failed'
+        ]);
+    }
+
+
 }

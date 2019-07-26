@@ -57,13 +57,15 @@ return [
     '[user]' =>
     [
         'userInfo/:user_id'          => ['api/user/userInfo',           ['method' => 'GET']],
-
+        'userAdd'                    => ['api/user/userAdd',            ['method' => 'POST']],
+        'userFind'                   => ['api/user/userFind',           ['method' => 'POST']],
     ],
 
     '[address]' =>
     [
         'address/:user_id'          => ['api/address/myAddress',       ['method' => 'GET']],
         'editAddress'               => ['api/address/editAddress',     ['method' => 'POST']],
+        'addAddress'                => ['api/address/addAddress',      ['method' => 'POST']],
     ],
 
     '[collect]' =>
@@ -82,6 +84,8 @@ return [
         'evaluateList'              => ['api/evaluate/evaluateList',         ['method' => 'POST']],
         'evaluateDelete'            => ['api/evaluate/evaluateDelete',       ['method' => 'POST']],
         'evaluateDeleteAll'         => ['api/evaluate/evaluateDeleteAll',    ['method' => 'POST']],
+        'evaluateOrder'             => ['api/evaluate/evaluateOrder',        ['method' => 'POST']],
+        'upLoadImg'                 => ['api/evaluate/upLoadImg',            ['method' => 'POST']],
     ],
 
     '[book]'   =>

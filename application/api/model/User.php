@@ -52,4 +52,50 @@ class User extends Model
             'data'  => $result
         ]);
     }
+
+    /**
+     * 添加用户
+     *
+     * @param Request $request
+     * @return json 添加结果
+     */
+    public function userAdd(Request $request)
+    {
+        $User=new User();
+        $res = $User->save($request->param());
+        if ($res === false) {
+            return json([
+                'code' => 500,
+                'msg' => 'insert failed'
+            ]);
+        }
+        return json([
+            'code' => 200,
+            'msg' => 'success'
+        ]);
+    }
+
+    /**
+     * 根据openid查找用户
+     *
+     * @param Request $request
+     * @return json 添加结果
+     */
+    public function userFind($id)
+    {
+        $User=new User();
+        $result = $User->where('open_id',$id);
+        if (empty($result)) {
+            return json([
+                'code'  => '404',
+                'msg'   => 'user  is null'
+            ]);
+        }
+
+        return json([
+            'code'  => 200,
+            'data'  => $result
+        ]);
+    }
+
 }

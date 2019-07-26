@@ -32,4 +32,15 @@ class Address extends Controller
     {
         return  \app\api\model\Address::editAddress($request);
     }
+
+     /**
+     * 添加地址
+     *
+     * @param Request $request
+     * @return String
+     */
+    public function addAddress(Request $request)
+    {
+        return  \app\api\model\Address::addAddress($request);
+    }
 }
