@@ -4,6 +4,7 @@ namespace app\api\model;
 
 use think\Request;
 use think\Model;
+use think\Db;
 
 class Evaluate extends Model
 {
