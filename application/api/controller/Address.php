@@ -43,4 +43,16 @@ class Address extends Controller
     {
         return  \app\api\model\Address::addAddress($request);
     }
+
+    /**
+     * 删除地址
+     *
+     * @param String $address_id
+     * @return json 删除结果
+     */
+    public function deleteAddress($address_id)
+    {
+        return  \app\api\model\Address::deleteAddress($address_id);
+    }
+
 }

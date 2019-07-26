@@ -66,6 +66,8 @@ return [
         'address/:user_id'          => ['api/address/myAddress',       ['method' => 'GET']],
         'editAddress'               => ['api/address/editAddress',     ['method' => 'POST']],
         'addAddress'                => ['api/address/addAddress',      ['method' => 'POST']],
+        'deleteAddress'             => ['api/address/deleteAddress',   ['method' => 'POST']],
+        
     ],
 
     '[collect]' =>

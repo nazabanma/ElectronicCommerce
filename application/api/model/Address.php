@@ -74,5 +74,35 @@ class Address extends Model
         ]);
     }
 
+    /**
+     * 删除地址
+     *
+     * @param String $address_id
+     * @return json 删除结果
+     */
+    public function deleteAddress($address_id)
+    {
+        if (is_null($address_id)) {
+            return json([
+                'code' => 404,
+                'msg' => 'Necessary param is null'
+            ]);
+        }
 
+        $res=Address::destroy($address_id);
+        
+        if ($res ===1) {
+            return json([
+                'code' => 200,
+                'msg' => '删除成功'
+            ]);
+            
+        }
+        return json([
+            'code' => 500,
+            'msg' => 'delete failed'
+        ]);
+
+
+        }
 }
