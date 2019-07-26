@@ -13,7 +13,7 @@ class Address extends Model
      * @param Request $request
      * @return json 编辑结果
      */
-    public static function editAddress(Request $request)
+    public  function editAddress(Request $request)
     {
         $address_id = $request->param('address_id');
         if (is_null($address_id)) {
@@ -51,13 +51,13 @@ class Address extends Model
         ]);
     }
 
-     /**
+    /**
      * 添加地址
      *
      * @param Request $request
      * @return String
      */
-    public function addAddress(Request $request)
+    public   function addAddress(Request $request)
     {
         $data = $request->param();
         $Address = new Address();
@@ -80,7 +80,7 @@ class Address extends Model
      * @param String $address_id
      * @return json 删除结果
      */
-    public function deleteAddress($address_id)
+    public   function deleteAddress($address_id)
     {
         if (is_null($address_id)) {
             return json([
@@ -89,20 +89,17 @@ class Address extends Model
             ]);
         }
 
-        $res=Address::destroy($address_id);
-        
-        if ($res ===1) {
+        $res = Address::destroy($address_id);
+
+        if ($res === 1) {
             return json([
                 'code' => 200,
                 'msg' => '删除成功'
             ]);
-            
         }
         return json([
             'code' => 500,
             'msg' => 'delete failed'
         ]);
-
-
-        }
+    }
 }

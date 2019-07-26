@@ -5,10 +5,17 @@ namespace app\api\controller;
 use think\Controller;
 use think\Request;
 use app\api\model\ViewMyAddress;
- 
+
 
 class Address extends Controller
 {
+
+    private $Address;
+
+    function _initialize()
+    {
+        $this->Address = new \app\api\model\Address();
+    }
 
     /**
      * 查询所有地址
@@ -30,10 +37,10 @@ class Address extends Controller
      */
     public function editAddress(\think\Request $request)
     {
-        return  \app\api\model\Address::editAddress($request);
+        return $this->Address->editAddress($request);
     }
 
-     /**
+    /**
      * 添加地址
      *
      * @param Request $request
@@ -41,7 +48,7 @@ class Address extends Controller
      */
     public function addAddress(Request $request)
     {
-        return  \app\api\model\Address::addAddress($request);
+        return $this->Address->addAddress($request);
     }
 
     /**
@@ -52,7 +59,6 @@ class Address extends Controller
      */
     public function deleteAddress($address_id)
     {
-        return  \app\api\model\Address::deleteAddress($address_id);
+        return $this->Address->deleteAddress($address_id);
     }
-
 }
