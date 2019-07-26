@@ -5,6 +5,7 @@ namespace app\api\model;
 use think\Model;
 use app\api\model\Address;
 use app\api\model\Collect;
+use think\Request;
 
 class User extends Model
 {
@@ -37,8 +38,8 @@ class User extends Model
     public function userInfo($user_id)
     {
         $result = User::get($user_id);
-        $result['collect']=Collect::where('user_id',$user_id)->count();
-        $result['address']=Address::where('user_id',$user_id)->count();
+        $result['collect'] = Collect::where('user_id', $user_id)->count();
+        $result['address'] = Address::where('user_id', $user_id)->count();
 
         if (is_null($result)) {
             return json([
@@ -61,8 +62,9 @@ class User extends Model
      */
     public function userAdd(Request $request)
     {
-        $User=new User();
+        $User = new User();
         $res = $User->save($request->param());
+        $user_id = $User->user_id;
         if ($res === false) {
             return json([
                 'code' => 500,
@@ -70,8 +72,9 @@ class User extends Model
             ]);
         }
         return json([
-            'code' => 200,
-            'msg' => 'success'
+            'code'      => 200,
+            'msg'       => 'success',
+            'user_id'   => $user_id,
         ]);
     }
 
@@ -83,8 +86,8 @@ class User extends Model
      */
     public function userFind($id)
     {
-        $User=new User();
-        $result = $User->where('open_id',$id);
+        $User = new User();
+        $result = $User->where('open_id', $id)->find();
         if (empty($result)) {
             return json([
                 'code'  => '404',
@@ -97,5 +100,4 @@ class User extends Model
             'data'  => $result
         ]);
     }
-
 }

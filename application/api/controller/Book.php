@@ -12,6 +12,13 @@ use app\api\model\BookType;
 class Book extends Controller
 {
 
+    private $ViewBookList;
+    private $Book;
+
+    function _initialize()
+    {
+        $this->ViewBookList = new ViewBookList();
+    }
     /**
      * 根据type_id返回书本信息列表(0表示返回全部,其余则根据type_id返回)
      *
@@ -20,8 +27,7 @@ class Book extends Controller
      */
     public function bookList($type_id = 0)
     {
-        $model = new ViewBookList();
-        return $model->bookList($type_id);
+        return $this->ViewBookList->bookList($type_id);
     }
 
     /**
@@ -32,12 +38,8 @@ class Book extends Controller
      */
     public function bookListByPage($page, $type_id = 0)
     {
-        $model = new ViewBookList();
-        return $model->bookListByPage($page, $type_id);
+        return $this->ViewBookList->bookListByPage($page, $type_id);
     }
-
-
-
 
     /**
      *根据书本id返回某本书信息
@@ -66,9 +68,6 @@ class Book extends Controller
         ]);
     }
 
-
-
-
     /**
      * 根据书本名字返回搜索结果
      *
@@ -77,43 +76,6 @@ class Book extends Controller
      */
     public function bookFind($name)
     {
-        $model = new ViewBookList();
-        return $model->bookFind($name);
-    }
-
-    /**
-     * 添加书本
-     *
-     * @param Request $request
-     * @return json 添加结果
-     */
-    public function bookAdd(Request $request)
-    {
-        $model = new Book();
-        return $model->bookAdd($request);
-    }
-
-    /**
-     * 编辑书本
-     *
-     * @param Request $request
-     * @return json 编辑结果
-     */
-    public function bookEdit(Request $request)
-    {
-        $model = new Book();
-        return $model->bookEdit($request);
-    }
-
-    /**
-     * 删除书本
-     *
-     * @param String $book_id
-     * @return json 删除结果
-     */
-    public function bookDelete($book_id)
-    {
-        $model = new Book();
-        return $model->bookDelete($book_id);
+        return $this->ViewBookList->bookFind($name);
     }
 }

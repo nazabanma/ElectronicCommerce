@@ -67,7 +67,7 @@ class Cart extends Controller
         return $model->shopCart($user_id);
     }
 
-     /**
+    /**
      * 从购物车选择书本到收藏夹
      *
      * @param Request $request
@@ -75,9 +75,6 @@ class Cart extends Controller
      */
     public function removeToCollect(Request $request)
     {
-        $model = new ShopCart();
-        return $model->removeToCollect($request);
+        return $this->Cart->removeToCollect($request);
     }
-
-    
 }

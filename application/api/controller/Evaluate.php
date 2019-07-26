@@ -5,12 +5,18 @@ namespace app\api\controller;
 use think\Controller;
 use think\Request;
 use app\api\model\ViewBookEvaluate;
- 
+
 class Evaluate extends Controller
 {
 
+    private $Evaluate;
 
- /**
+    function _initialize()
+    {
+        $this->Evaluate = new \app\api\model\Evaluate();
+    }
+
+    /**
      * 对评价的评论
      *
      * @param Request $request
@@ -18,11 +24,10 @@ class Evaluate extends Controller
      */
     public function evaluate(Request $request)
     {
-        $model = new \app\api\model\Evaluate();
-        return $model->evaluate($request);
+        return $this->Evaluate->evaluate($request);
     }
 
-     /**
+    /**
      * 给评价点赞
      *
      * @param Request $request
@@ -32,7 +37,6 @@ class Evaluate extends Controller
     {
         $model = new \app\api\model\EvaluateLike();
         return $model->evaluateLike($request);
-
     }
 
     /**
@@ -41,13 +45,13 @@ class Evaluate extends Controller
      * @param String $book_id
      * @return json
      */
-    public function evaluateList($book_id,$user_id)
+    public function evaluateList($book_id, $user_id)
     {
         $model = new ViewBookEvaluate();
-        return $model->evaluateList($book_id,$user_id);
+        return $model->evaluateList($book_id, $user_id);
     }
 
-     /**
+    /**
      * 删除评论
      *
      * @param Request $request
@@ -55,12 +59,10 @@ class Evaluate extends Controller
      */
     public function evaluateDelete($evaluate_id)
     {
-        $model = new \app\api\model\Evaluate();
-        return $model->evaluateDelete($evaluate_id);
-
+        return $this->Evaluate->evaluateDelete($evaluate_id);
     }
 
-      /**
+    /**
      * 删除评价
      *
      * @param Request $request
@@ -68,12 +70,10 @@ class Evaluate extends Controller
      */
     public function evaluateDeleteAll($order_item_id)
     {
-        $model = new \app\api\model\Evaluate();
-        return $model->evaluateDeleteAll($order_item_id);
-          
+        return $this->Evaluate->evaluateDeleteAll($order_item_id);
     }
 
-     /**
+    /**
      * 评价订单
      *
      * @param Request $request
@@ -81,9 +81,7 @@ class Evaluate extends Controller
      */
     public function evaluateOrder(Request $request)
     {
-        $model = new \app\api\model\Evaluate();
-        return $model->evaluateOrder($request);
-          
+        return $this->Evaluate->evaluateOrder($request);
     }
 
     /**
@@ -94,10 +92,6 @@ class Evaluate extends Controller
      */
     public function upLoadImg(Request $request)
     {
-        $model = new \app\api\model\Evaluate();
-        return $model->upLoadImg($request);
+        return $this->Evaluate->upLoadImg($request);
     }
-
-
-
 }
