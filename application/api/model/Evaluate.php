@@ -21,7 +21,6 @@ class Evaluate extends Model
         $user_id = $request->param('user_id');                //用户id
         $content = $request->param('content');                 //评价内容
         $time = $request->param('time');
-        $if_anonymous = $request->param('if_anonymous');
 
         if (is_null($order_item_id) || is_null($user_id)) {
             return json([
@@ -34,8 +33,6 @@ class Evaluate extends Model
             'user_id'           => $user_id,
             'order_item_id'     => $order_item_id,
             'content'           => $content,
-            'img'               => $img,
-            'if_anonymous'      => $if_anonymous,
             'evaluate_time'     => $time,
         ]);
 
