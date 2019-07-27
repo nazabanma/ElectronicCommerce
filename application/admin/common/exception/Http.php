@@ -18,10 +18,9 @@ class Http extends Handle
 
         // 参数验证错误
         if ($e instanceof ValidateException) {
-
             return json([
                 'code'  => 403,
-                'msg'   => $e->getError(),
+                'msg'   => $e->getMessage(),
             ]);
             // return view('index/userList', [
             //     'code'  => 403,

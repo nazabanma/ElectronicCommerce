@@ -10,8 +10,9 @@ class ViewAdminPower extends Model
     function powervalidate($aid, $controller, $action)
     {
         $model = new ViewAdminPower();
+
         if (empty($aid)) {
-            throw new ValidateException('登录信息失效);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    ');
+            throw new ValidateException('登录信息失效');
         }
         $hasPower = $model->where([
             'admin_id'      => $aid,
