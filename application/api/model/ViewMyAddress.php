@@ -22,7 +22,10 @@ class ViewMyAddress extends Model
             ]);
         }
         $Address = new ViewMyAddress();
-        $data = $Address->where('user_id', $user_id)->select();
+        $data = $Address
+            ->where('user_id', $user_id)
+            ->where('flag', 1)
+            ->select();
         return json([
             'code' => '200',
             'data' => $data

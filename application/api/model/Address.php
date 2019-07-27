@@ -89,9 +89,10 @@ class Address extends Model
             ]);
         }
 
-        $res = Address::destroy($address_id);
-
-        if ($res === 1) {
+        $Address = Address::get($address_id);
+        $Address->flag = 0;
+        $res = $Address->save();
+        if ($res == 1) {
             return json([
                 'code' => 200,
                 'msg' => '删除成功'

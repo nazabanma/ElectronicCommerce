@@ -14,6 +14,8 @@ class ViewAdminPower extends Model
         if (empty($aid)) {
             throw new ValidateException('登录信息失效');
         }
+        // dump($controller);
+        // dump($action);
         $hasPower = $model->where([
             'admin_id'      => $aid,
             'controller'    => $controller,

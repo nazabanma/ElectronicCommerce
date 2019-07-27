@@ -6,6 +6,7 @@ return [
     'no_auth'    => [
         ['c' => 'Index', 'a' => 'index'],
         ['c' => 'User', 'a' => 'login'],
+        ['c' => 'User', 'a' => 'logout'],
     ],
 
     'book_type_to_id'              => [

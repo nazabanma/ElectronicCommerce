@@ -76,7 +76,7 @@ class Order extends Controller
      */
     public function orderDelete(Request $request)
     {
-        return $this->orderDelete($request);
+        return $this->Order->orderDelete($request);
     }
 
     /**

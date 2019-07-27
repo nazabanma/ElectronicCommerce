@@ -259,6 +259,16 @@
                             <tr>
                                 <td>封面</td>
                                 <td>
+                                    <img style="height: 300px;max-height: 100%;max-width: 100%;" :src="book_cover">
+                                    <div class="weui-uploader__input-box">
+                                        <input @change='sendBookCover($event)' id="uploaderInput"
+                                            class="weui-uploader__input" type="file" accept="image/*" multiple="">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>图片</td>
+                                <td>
                                     <img style="height: 300px;max-height: 100%;max-width: 100%;"
                                         v-for="(item,index) in book_img" :src="item">
                                     <div class="weui-uploader__input-box">
@@ -357,6 +367,7 @@
                     book_author: '',
                     shop_id: '1',
                     detail_img: '',
+                    book_cover: '',
                 },
 
             },
@@ -372,10 +383,17 @@
                 },
                 detail_img: function () {
                     return this.bookinfo.detail_img.split(';');
+                },
+                book_cover: function () {
+                    return this.bookinfo.book_cover;
                 }
             },
             methods: {
-
+                sendBookCover(event) {
+                    this.upload(event, function (res, _this) {
+                        _this.bookinfo.book_cover = res.data;
+                    })
+                },
                 sendBookImg(event) {
                     this.upload(event, function (res, _this) {
                         _this.bookinfo.book_img += res.data + ';';
@@ -404,8 +422,8 @@
                             if (res.code == 200) {
                                 event.target.files[0] = null;
                                 callback(res, _this);
-                            } else if (response.code == 403) {
-                                alert(response.msg);
+                            } else if (res.code == 403) {
+                                alert(res.msg);
                                 location.href =
                                     'http://admin.wyxs.talesrunner.org/static/admin/index.html';
                             } else {
@@ -441,7 +459,6 @@
                     if (len2 > 0) {
                         _this.bookinfo.detail_img = _this.bookinfo.detail_img.slice(0, len2 - 1);
                     }
-                    debugger;
                     $.ajax({
                         type: "POST",
                         url: "http://admin.wyxs.talesrunner.org/admin/addBook",

@@ -176,6 +176,13 @@
                                 <td>封面</td>
                                 <td>
                                     <img style="margin-left: 20px; height: 300px;max-width: 100%;max-height: 100%;"
+                                        v-for="(item,index) in book_cover" :src="item">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>图片</td>
+                                <td>
+                                    <img style="margin-left: 20px; height: 300px;max-width: 100%;max-height: 100%;"
                                         v-for="(item,index) in book_img" :src="item">
                                 </td>
                             </tr>
@@ -224,6 +231,8 @@
                             _this.book_img = _this.bookinfo.book_img.split(';');
                             let detail = _this.bookinfo.detail_img
                             _this.detail_img = detail == null ? null : detail.split(';');
+                            let cover = _this.bookinfo.book_cover;
+                            _this.book_cover = cover == null ? null : cover.split(';');
                         } else if (response.code == 403) {
                             alert(response.msg);
                             location.href =

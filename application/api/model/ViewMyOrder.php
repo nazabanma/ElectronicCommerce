@@ -52,11 +52,12 @@ class ViewMyOrder extends Model
                 'book_id'           => $orderItem['book_id'],
                 'book_name'         => $orderItem['book_name'],
                 'book_author'       => $orderItem['book_author'],
-                'book_img'          => explode(';', $orderItem['book_img'])[0],
+                'book_img'          => $orderItem['book_cover'],
                 'price'             => $orderItem['price'],
                 'count'             => $orderItem['count'],
                 'user_id'           => $orderItem['user_id'],
                 'flag'              => $orderItem['flag'],
+                'address_id'        => $orderItem['address_id'],
 
             ];
             if ($prev > 0 && $prev != $orderItem['order_id']) {
@@ -87,6 +88,7 @@ class ViewMyOrder extends Model
             'order_state_id'    => $item[0]['order_state_id'],
             'user_id'           => $item[0]['user_id'],
             'flag'              => $item[0]['flag'],
+            'address_id'        =>$item[0]['address_id'],
             'item'              => $item,
         ];
     }

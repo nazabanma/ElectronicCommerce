@@ -19,8 +19,10 @@ class Auth
         $action     = Request::instance()->action();
         $route = ['c' => $controller, 'a' => $action];
         $noAuth = Config::load("config.php")['no_auth'];
-        if (in_array($route, $noAuth)) {
-            return;
+        foreach ($noAuth as $tmp) {
+            if ($tmp['c'] == $route['c'] && $tmp['a'] == $route['a']) {
+                return;
+            }
         }
         $aid = Session('aid');
         $model = new ViewAdminPower();

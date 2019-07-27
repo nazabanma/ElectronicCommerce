@@ -254,7 +254,7 @@ class Order extends Model
         $order_id = $request->param('order_id');  //订单id
         $detail = $request->param('detail');  //订单id
 
-        if (is_null($order_id)) {
+        if (is_null($order_id)||is_null($detail)) {
             return json([
                 'code'  => '404',
                 'msg'   => 'Necessary param is null'
@@ -269,6 +269,15 @@ class Order extends Model
                 'msg'   => '订单不存在'
             ]);
         }
+
+         if($order->order_state_id==5)
+         {
+            return json([
+                'code'  => '402',
+                'msg'   => '订单已取消'
+            ]);
+         }
+
         Db::startTrans();
         try {
             $order->order_state_id = 5; //订单状态id改成取消订单id
