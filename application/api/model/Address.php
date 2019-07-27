@@ -102,4 +102,27 @@ class Address extends Model
             'msg' => 'delete failed'
         ]);
     }
+
+    /**
+     * 查询地址
+     *
+     * @param String $address_id
+     * @return json 查询结果
+     */
+    public function findAddress($address_id)
+    {
+        if (is_null($address_id)) {
+            return json([
+                'code' => 404,
+                'msg' => 'Necessary param is null'
+            ]);
+        }
+
+        $res = Address::get($address_id);
+
+        return json([
+            'code' => 200,
+            'data' => $res
+        ]);
+    }
 }

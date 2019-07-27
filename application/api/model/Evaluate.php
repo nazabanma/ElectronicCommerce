@@ -5,6 +5,7 @@ namespace app\api\model;
 use think\Request;
 use think\Model;
 use think\Db;
+use app\api\model\Order;
 
 class Evaluate extends Model
 {
@@ -121,7 +122,9 @@ class Evaluate extends Model
         $user_id = $request->param('user_id');  //用户id
         $evaluate_list = json_decode($request->param('evaluate_list'), true);
         $if_anonymous = $request->param('if_anonymous'); //是否匿名
-        if (empty($evaluate_list)) {
+        $order_id = $request->param('order_id');
+
+        if (empty($evaluate_list) || is_null($user_id) || is_null($if_anonymous) || is_null($order_id)) {
             return json([
                 'code'  => '404',
                 'msg'   => 'Necessary param is null'
@@ -132,7 +135,14 @@ class Evaluate extends Model
             Db::startTrans();
             foreach ($evaluate_list as $item) {
 
-                $this->createEvaluateItem($user_id, $item,$if_anonymous);
+                $this->createEvaluateItem($user_id, $item, $if_anonymous);
+            }
+
+            $order = Order::get($order_id);
+            $order->order_state_id = 4;
+            $result = $order->save();
+            if ($result === false) {
+                throw new Exception('update failed', 500);
             }
 
             Db::commit();
@@ -156,7 +166,7 @@ class Evaluate extends Model
      * @param String $user_id
      * @return void
      */
-    protected function createEvaluateItem($user_id, $item,$if_anonymous)
+    protected function createEvaluateItem($user_id, $item, $if_anonymous)
     {
 
         $evaluateItem = new Evaluate([

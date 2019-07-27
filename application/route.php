@@ -67,6 +67,7 @@ return [
         'editAddress'               => ['api/address/editAddress',     ['method' => 'POST']],
         'addAddress'                => ['api/address/addAddress',      ['method' => 'POST']],
         'deleteAddress'             => ['api/address/deleteAddress',   ['method' => 'POST']],
+        'findAddress'               => ['api/address/findAddress',     ['method' => 'POST']],
         
     ],
 

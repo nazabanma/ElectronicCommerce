@@ -61,4 +61,15 @@ class Address extends Controller
     {
         return $this->Address->deleteAddress($address_id);
     }
+
+     /**
+     * 查询地址
+     *
+     * @param String $address_id
+     * @return json 查询结果
+     */
+    public function findAddress($address_id)
+    {
+        return $this->Address->findAddress($address_id);
+    }
 }

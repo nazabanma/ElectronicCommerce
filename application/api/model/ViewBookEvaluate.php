@@ -39,6 +39,12 @@ class ViewBookEvaluate extends Model
         //不能直接等于evaluateList[0]['order_item_id'],否则若数组为空则报错
         $prev = -1;
         foreach ($evaluateList as $evaluateItem) {
+           
+            if(is_null($evaluateItem['content'])&&is_null($evaluateItem['img']))
+            {
+                continue;
+            }
+
             $temp = [
                 'evaluate_id'   => $evaluateItem['evaluate_id'],
                 'name'          => $evaluateItem['nick_name'],
