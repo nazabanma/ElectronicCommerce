@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>那咋办嘛</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/Swiper/3.4.2/css/swiper.min.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/Swiper/3.4.2/js/swiper.jquery.min.js"></script>
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <style>
+        #app table td {
+            text-align: center;
+        }
+
+        #app button {
+            float: left;
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .layui-table td {
+            width: 50%;
+        }
+
+        .layui-inline input::-webkit-input-placeholder {
+            opacity: 0.2;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部开始 -->
+    <div class="container">
+        <div class="logo"><a href="./index.html">那咋办嘛</a></div>
+        <div class="open-nav"><i class="iconfont">&#xe699;</i></div>
+        <ul class="layui-nav right" lay-filter="">
+            <li class="layui-nav-item">
+                <a href="javascript:;">门在这</a>
+                <dl class="layui-nav-child">
+                    <!-- 二级菜单 -->
+                    <!-- <dd><a href="">个人信息</a></dd>
+                    <dd><a href="">切换帐号</a></dd> -->
+                    <dd><a onclick="logOut()">滚</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    <!-- 顶部结束 -->
+    <!-- 中部开始 -->
+    <div class="wrapper">
+        <!-- 左侧菜单开始 -->
+        <div class="left-nav">
+            <div id="side-nav">
+                <ul id="nav">
+                    <li class="list" current>
+                        <a href="./index.html">
+                            <i class="iconfont">&#xe761;</i>
+                            欢迎页面
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe70b;</i>
+                            用户管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="member-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    用户列表
+                                </a>
+                            </li>
+                            <li class="current">
+                                <a href="member-info.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    用户详情
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe6a3;</i>
+                            商品管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./book-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    商品列表
+                                </a>
+                            </li>
+
+                        </ul>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./book-add.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    商品新增
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe6a3;</i>
+                            订单管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./order-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    订单列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="./order-info.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    订单详情
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- 左侧菜单结束 -->
+        <!-- 右侧主体开始 -->
+        <div class="page-content">
+
+            <div id="app">
+                <form class="layui-form" action="">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">订单ID搜索</label>
+                        <div class="layui-input-inline">
+                            <input v-model='query_order_id' :placeholder="currentOderId" @blur='getOrder'
+                                autocomplete="off" class="layui-input">
+                        </div>
+
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">改订单状态</label>
+                        <div class="layui-input-inline">
+                            <select name="quiz2">
+                                <option value="-1">请选择订单状态</option>
+                                <option v-for="item in orderState" :value="item.id">{{item.name}}</option>
+                            </select>
+                            <div class="layui-unselect layui-form-select">
+                                <div class="layui-select-title"><input type="text" placeholder="请选择市" value=""
+                                        readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i>
+                                </div>
+                                <dl class="layui-anim layui-anim-upbit">
+                                    <dd lay-value="-1" class=""></dd>
+                                    <dd v-for="item in orderState" :lay-value="item.id">{{item.name}}</option>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <button @click='updateOrderState' class="layui-btn">确定修改</button>
+                <div v-for="item in orderInfo" v-if="orderInfo">
+                    <table class="layui-table">
+                        <tbody>
+                            <tr>
+                                <td>订单项ID</td>
+                                <td>{{item.order_item_id}}</td>
+                            </tr>
+                            <tr>
+                                <td>发货人</td>
+                                <td>{{item.nick_name}}</td>
+                            </tr>
+                            <tr>
+                                <td>收货人</td>
+                                <td>{{item.receiver_name}}</td>
+                            </tr>
+                            <tr>
+                                <td>收货人姓名</td>
+                                <td>{{item.receiver_name}}</td>
+                            </tr>
+                            <tr>
+                                <td>收货人电话</td>
+                                <td>{{item.receiver_phone}}</td>
+                            </tr>
+                            <tr>
+                                <td>收货地址</td>
+                                <td>{{item.province}} {{item.city}} {{item.area}} {{item.concrete_address}}</td>
+                            </tr>
+                            <tr>
+                                <td>数量</td>
+                                <td>{{item.count}}</td>
+                            </tr>
+                            <tr>
+                                <td>单价</td>
+                                <td>{{item.price}}</td>
+                            </tr>
+                            <tr>
+                                <td>总价</td>
+                                <td>{{(item.price*item.count)}}</td>
+                            </tr>
+                            <tr>
+                                <td>类别</td>
+                                <td>{{item.type_name}}</td>
+                            </tr>
+                            <tr>
+                                <td>状态</td>
+                                <td>{{item.name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <!-- 右侧主体结束 -->
+    </div>
+    <!-- 中部结束 -->
+
+    <script>
+        let vm = new Vue({
+            el: '#app',
+            data: {
+
+                orderState: [{
+                        id: 0,
+                        name: '待付款',
+                    },
+                    {
+                        id: 1,
+                        name: '待发货',
+                    },
+                    {
+                        id: 2,
+                        name: '待收货',
+                    },
+                    {
+                        id: 3,
+                        name: '待评价',
+                    },
+                    {
+                        id: 4,
+                        name: '评价后',
+                    },
+                    {
+                        id: 5,
+                        name: '取消订单',
+                    },
+                    {
+                        id: 6,
+                        name: '退款成功',
+                    },
+                    {
+                        id: 7,
+                        name: '申请退款',
+                    },
+                ],
+                bookinfo: null,
+                orderInfo: null,
+                query_order_id: null,
+                currentOderId: '',
+            },
+            mounted() {
+                order_id = getQueryString('order_id');
+                this.order_id = order_id;
+                this.currentOderId = '当前订单ID:' + order_id;
+                if (!order_id) {
+                    return;
+                }
+                let _this = this;
+                $.ajax({
+                    type: "GET",
+                    url: " http://admin.wyxs.talesrunner.org/admin/getOrderItem/" + order_id,
+                    success: function (response) {
+                        if (response.code == 200) {
+                            _this.orderInfo = response.data;
+                        } else if (response.code == 403) {
+                            alert(response.msg);
+                            location.href =
+                                'http://admin.wyxs.talesrunner.org/static/admin/index.html';
+                        }
+                    }
+                });
+            },
+            methods: {
+
+                getOrder: function () {
+                    if (!this.query_order_id) {
+                        return;
+                    }
+                    location.href =
+                        'http://admin.wyxs.talesrunner.org/static/admin/order-info.html?order_id=' + this
+                        .query_order_id;
+                },
+                updateOrderState() {
+                    let state_id = $('#app .layui-anim.layui-anim-upbit dd.layui-this')[0].getAttribute(
+                        'lay-value');
+                    if (this.orderInfo.length == 0) {
+                        alert('订单为空,修改失败');
+                        return;
+                    }
+                    if (state_id == -1) {
+                        alert('请选择状态');
+                        return;
+                    }
+                    let _this = this;
+                    $.ajax({
+                        type: "POST",
+                        url: "http://admin.wyxs.talesrunner.org/admin/updateOrderState",
+                        data: {
+                            order_id: _this.order_id,
+                            order_state_id: state_id
+                        },
+                        success: function (response) {
+                            if (response.code == 200) {
+                                alert('修改成功');
+                                location.href =
+                                    "http://admin.wyxs.talesrunner.org/static/admin/order-info.html?order_id=" +
+                                    _this.order_id;
+                            } else if (response.code == 403) {
+                                alert(response.msg);
+                                location.href =
+                                    'http://admin.wyxs.talesrunner.org/static/admin/index.html';
+                            } else {
+                                alert('修改失败');
+                            }
+                        }
+                    });
+
+                }
+            },
+        });
+
+
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+
+        function logOut() {
+            $.ajax({
+                type: "GET",
+                url: "http://admin.wyxs.talesrunner.org/admin/logOut",
+                success: function (response) {
+                    if (response.code == 200) {
+                        location.href = './login.html';
+                    } else {
+                        alert("慢点爬");
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

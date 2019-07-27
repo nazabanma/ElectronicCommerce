@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>那咋办嘛</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/Swiper/3.4.2/css/swiper.min.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/Swiper/3.4.2/js/swiper.jquery.min.js"></script>
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <style>
+        #app table td {
+            text-align: center;
+        }
+
+        #app button {
+            float: right;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部开始 -->
+    <div class="container">
+        <div class="logo"><a href="./index.html">那咋办嘛</a></div>
+        <div class="open-nav"><i class="iconfont">&#xe699;</i></div>
+        <ul class="layui-nav right" lay-filter="">
+            <li class="layui-nav-item">
+                <a href="javascript:;">门在这</a>
+                <dl class="layui-nav-child">
+                    <!-- 二级菜单 -->
+                    <!-- <dd><a href="">个人信息</a></dd>
+                    <dd><a href="">切换帐号</a></dd> -->
+                    <dd><a onclick="logOut()">滚</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    <!-- 顶部结束 -->
+    <!-- 中部开始 -->
+    <div class="wrapper">
+        <!-- 左侧菜单开始 -->
+        <div class="left-nav">
+            <div id="side-nav">
+                <ul id="nav">
+                    <li class="list" current>
+                        <a href="./index.html">
+                            <i class="iconfont">&#xe761;</i>
+                            欢迎页面
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe70b;</i>
+                            用户管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="member-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    用户列表
+                                </a>
+                            </li>
+                            <li class="current">
+                                <a href="member-info.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    用户详情
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe6a3;</i>
+                            商品管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./book-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    商品列表
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./book-add.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    商品新增
+                                </a>
+                            </li>
+
+                        </ul>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe6a3;</i>
+                            订单管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./order-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    订单列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="./order-info.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    订单详情
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- 左侧菜单结束 -->
+        <!-- 右侧主体开始 -->
+        <div class="page-content">
+
+            <div id="app">
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">ID搜索</label>
+                    <div class="layui-input-inline">
+                        <input v-model='query_book_id' @blur='getBook' type="tel" name="phone" lay-verify="phone"
+                            autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="bookinfo" v-if="bookinfo">
+                    <table class="layui-table">
+                        <tbody>
+                            <tr>
+                                <td>ID</td>
+                                <td>{{bookinfo.book_id}}</td>
+                            </tr>
+                            <tr>
+                                <td>名称</td>
+                                <td>{{bookinfo.book_name}}</td>
+                            </tr>
+                            <tr>
+                                <td>价格</td>
+                                <td>{{bookinfo.book_price}}</td>
+                            </tr>
+                            <tr>
+                                <td>详情</td>
+                                <td>{{bookinfo.book_detail}}</td>
+                            </tr>
+                            <tr>
+                                <td>数量</td>
+                                <td>{{bookinfo.book_count}}</td>
+                            </tr>
+                            <tr>
+                                <td>作者</td>
+                                <td>{{bookinfo.book_author}}</td>
+                            </tr>
+                            <tr>
+                                <td>类别</td>
+                                <td>{{bookinfo.type_name}}</td>
+                            </tr>
+                            <tr>
+                                <td>封面</td>
+                                <td>
+                                    <img style="margin-left: 20px; height: 300px;max-width: 100%;max-height: 100%;"
+                                        v-for="(item,index) in book_img" :src="item">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>详情</td>
+                                <td>
+                                    <img style="margin-left: 20px;height: 300px;max-width: 100%;max-height: 100%;"
+                                        v-for="(item,index) in detail_img" :src="item">
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <button @click='del' class="layui-btn" lay-submit="" lay-filter="demo1">删除商品</button>
+                    <button @click='bookUpdate' class="layui-btn" lay-submit="" lay-filter="demo1">修改商品</button>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <!-- 右侧主体结束 -->
+    </div>
+    <!-- 中部结束 -->
+
+    <script>
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                bookinfo: null,
+                query_book_id: null,
+            },
+            mounted() {
+                book_id = getQueryString('book_id');
+                if (!book_id) {
+                    return;
+                }
+                let _this = this;
+                $.ajax({
+                    type: "GET",
+                    url: " http://admin.wyxs.talesrunner.org/admin/bookDetail/" + book_id,
+                    success: function (response) {
+                        if (response.code == 200) {
+                            _this.bookinfo = response.data;
+                            _this.book_img = _this.bookinfo.book_img.split(';');
+                            let detail = _this.bookinfo.detail_img
+                            _this.detail_img = detail == null ? null : detail.split(';');
+                        } else if (response.code == 403) {
+                            alert(response.msg);
+                            location.href =
+                                'http://admin.wyxs.talesrunner.org/static/admin/index.html';
+                        }
+                    }
+                });
+
+            },
+            methods: {
+                del: function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "http://admin.wyxs.talesrunner.org/admin/delBook",
+                        data: {
+                            book_id: this.bookinfo.book_id
+                        },
+                        success: function (response) {
+                            if (response.code == 200) {
+                                alert('删除成功');
+                                location.href =
+                                    'http://admin.wyxs.talesrunner.org/static/admin/book-list.html';
+                            } else if (response.code == 403) {
+                                alert(response.msg);
+                                location.href =
+                                    'http://admin.wyxs.talesrunner.org/static/admin/index.html';
+                            }
+                        },
+                    });
+                },
+                bookUpdate: function () {
+                    if (!this.bookinfo.book_id) {
+                        return;
+                    }
+                    location.href =
+                        'http://admin.wyxs.talesrunner.org/static/admin/book-update.html?book_id=' + this
+                        .bookinfo.book_id;
+                },
+                getBook: function () {
+                    if (!this.query_book_id) {
+                        return;
+                    }
+                    location.href =
+                        'http://admin.wyxs.talesrunner.org/static/admin/book-info.html?book_id=' + this
+                        .query_book_id;
+                }
+            },
+        });
+
+
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+
+        function logOut() {
+            $.ajax({
+                type: "GET",
+                url: "http://admin.wyxs.talesrunner.org/admin/logOut",
+                success: function (response) {
+                    if (response.code == 200) {
+                        location.href = './login.html';
+                    } else {
+                        alert("慢点爬");
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

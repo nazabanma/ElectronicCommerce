@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>那咋办嘛</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/Swiper/3.4.2/css/swiper.min.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/Swiper/3.4.2/js/swiper.jquery.min.js"></script>
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+    <style>
+        #app table td {
+            text-align: center;
+        }
+
+        #app button {
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部开始 -->
+    <div class="container">
+        <div class="logo"><a href="./index.html">那咋办嘛</a></div>
+        <div class="open-nav"><i class="iconfont">&#xe699;</i></div>
+        <ul class="layui-nav right" lay-filter="">
+            <li class="layui-nav-item">
+                <a href="javascript:;">门在这</a>
+                <dl class="layui-nav-child">
+                    <!-- 二级菜单 -->
+                    <!-- <dd><a href="">个人信息</a></dd>
+                    <dd><a href="">切换帐号</a></dd> -->
+                    <dd><a onclick="logOut()">滚</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    <!-- 顶部结束 -->
+    <!-- 中部开始 -->
+    <div class="wrapper">
+        <!-- 左侧菜单开始 -->
+        <div class="left-nav">
+            <div id="side-nav">
+                <ul id="nav">
+                    <li class="list" current>
+                        <a href="./index.html">
+                            <i class="iconfont">&#xe761;</i>
+                            欢迎页面
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe70b;</i>
+                            用户管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="member-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    用户列表
+                                </a>
+                            </li>
+                            <li class="current">
+                                <a href="member-info.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    用户详情
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe6a3;</i>
+                            商品管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./book-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    商品列表
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./book-add.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    商品新增
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe6a3;</i>
+                            订单管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./order-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    订单列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="./order-info.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    订单详情
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- 左侧菜单结束 -->
+        <!-- 右侧主体开始 -->
+        <div class="page-content">
+
+            <div id="app">
+
+                <div class="layui-inline">
+                    <label class="layui-form-label">ID搜索</label>
+                    <div class="layui-input-inline">
+                        <input v-model='query_user_id' @blur='getUser' type="tel" name="phone" lay-verify="phone"
+                            autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="userinfo" v-if="userinfo">
+                    <table class="layui-table">
+                        <tbody>
+                            <tr>
+                                <td>ID</td>
+                                <td>{{userinfo.user_id}}</td>
+                            </tr>
+                            <tr>
+                                <td>昵称</td>
+                                <td>{{userinfo.nick_name}}</td>
+                            </tr>
+                            <tr>
+                                <td>性别</td>
+                                <td>{{userinfo.gender==1?'男':'女'}}</td>
+                            </tr>
+                            <tr>
+                                <td>省</td>
+                                <td>{{userinfo.province}}</td>
+                            </tr>
+                            <tr>
+                                <td>市</td>
+                                <td>{{userinfo.city}}</td>
+                            </tr>
+                            <tr>
+                                <td>最后一次登录时间</td>
+                                <td>{{userinfo.login_time}}</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <button @click='del' class="layui-btn" lay-submit="" lay-filter="demo1">删除用户</button>
+                </div>
+
+            </div>
+
+
+        </div>
+
+        <!-- 右侧主体结束 -->
+    </div>
+    <!-- 中部结束 -->
+
+    <script>
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                userinfo: null,
+                query_user_id: null,
+            },
+            mounted() {
+                user_id = getQueryString('user_id');
+                if (!user_id) {
+                    return;
+                }
+                let _this = this;
+                $.ajax({
+                    type: "GET",
+                    url: " http://admin.wyxs.talesrunner.org/admin/findUser/" + user_id,
+                    success: function (response) {
+                        if (response.code == 200) {
+                            _this.userinfo = response.data;
+                        } else if (response.code == 403) {
+                            alert(response.msg);
+                            location.href =
+                                'http://admin.wyxs.talesrunner.org/static/admin/index.html';
+                        }
+                    }
+                });
+            },
+            methods: {
+                del: function () {
+                    $.ajax({
+                        type: "POST",
+                        url: "http://admin.wyxs.talesrunner.org/admin/delUser",
+                        data: {
+                            user_id: this.userinfo.user_id
+                        },
+                        success: function (response) {
+                            if (response.code == 200) {
+                                alert('删除成功');
+                                location.href =
+                                    'http://admin.wyxs.talesrunner.org/static/admin/member-list.html';
+                            } else if (response.code == 403) {
+                                alert(response.msg);
+                                location.href =
+                                    'http://admin.wyxs.talesrunner.org/static/admin/index.html';
+                            }
+                        },
+                    });
+                },
+                getUser: function () {
+                    if (!this.query_user_id) {
+                        return;
+                    }
+                    location.href =
+                        'http://admin.wyxs.talesrunner.org/static/admin/member-info.html?user_id=' + this
+                        .query_user_id;
+                }
+            },
+        });
+
+        function logOut() {
+            $.ajax({
+                type: "GET",
+                url: "http://admin.wyxs.talesrunner.org/admin/logOut",
+                success: function (response) {
+                    if (response.code == 200) {
+                        location.href = './login.html';
+                    } else {
+                        alert("慢点爬");
+                    }
+                }
+            });
+        }
+
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+    </script>
+</body>
+
+</html>

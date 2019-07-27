@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>那咋办嘛</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="./css/font.css">
+    <link rel="stylesheet" href="./css/xadmin.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/Swiper/3.4.2/css/swiper.min.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.bootcss.com/Swiper/3.4.2/js/swiper.jquery.min.js"></script>
+    <script src="./lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="./js/xadmin.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
+
+    <style>
+        .page-content table {
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .page-content table th {
+            text-align: center;
+        }
+
+        #app .layui-input.page {
+            display: inline-block;
+            width: 50px;
+        }
+
+        .weui-uploader__input-box {
+            float: right;
+            position: relative;
+            margin-right: 9px;
+            margin-bottom: 9px;
+            width: 77px;
+            height: 77px;
+            border: 1px solid #D9D9D9;
+        }
+
+        .weui-uploader__input-box:before,
+        .weui-uploader__input-box:after {
+            content: " ";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -webkit-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+            background-color: #D9D9D9;
+        }
+
+        .weui-uploader__input-box:before {
+            width: 2px;
+            height: 39.5px;
+        }
+
+        .weui-uploader__input-box:after {
+            width: 39.5px;
+            height: 2px;
+        }
+
+        .weui-uploader__input-box:active {
+            border-color: #999999;
+        }
+
+        .weui-uploader__input-box:active:before,
+        .weui-uploader__input-box:active:after {
+            background-color: #999999;
+        }
+
+        .weui-uploader__input {
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 顶部开始 -->
+    <div class="container">
+        <div class="logo"><a href="./index.html">那咋办嘛</a></div>
+        <div class="open-nav"><i class="iconfont">&#xe699;</i></div>
+        <ul class="layui-nav right" lay-filter="">
+            <li class="layui-nav-item">
+                <a href="javascript:;">门在这</a>
+                <dl class="layui-nav-child">
+                    <!-- 二级菜单 -->
+                    <!-- <dd><a href="">个人信息</a></dd>
+                    <dd><a href="">切换帐号</a></dd> -->
+                    <dd><a onclick="logOut()">滚</a></dd>
+                </dl>
+            </li>
+        </ul>
+    </div>
+    <!-- 顶部结束 -->
+    <!-- 中部开始 -->
+    <div class="wrapper">
+        <!-- 左侧菜单开始 -->
+        <div class="left-nav">
+            <div id="side-nav">
+                <ul id="nav">
+                    <li class="list" current>
+                        <a href="./index.html">
+                            <i class="iconfont">&#xe761;</i>
+                            欢迎页面
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe70b;</i>
+                            用户管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="member-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    用户列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="member-del.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    用户删除
+                                </a>
+                            </li>
+                            <li>
+                                <a href="member-add.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    用户新增
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe6a3;</i>
+                            商品管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./book-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    商品列表
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./book-add.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    商品新增
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="list">
+                        <a href="javascript:;">
+                            <i class="iconfont">&#xe6a3;</i>
+                            订单管理
+                            <i class="iconfont nav_right">&#xe697;</i>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="./order-list.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    订单列表
+                                </a>
+                            </li>
+                            <li>
+                                <a href="./order-info.html">
+                                    <i class="iconfont">&#xe6a7;</i>
+                                    订单详情
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!-- 左侧菜单结束 -->
+        <!-- 右侧主体开始 -->
+        <div class="page-content">
+
+            <div id="app">
+
+
+                <div class="bookinfo" v-if="bookinfo">
+                    <table class="layui-table">
+                        <tbody>
+                            <tr>
+                                <td>名称</td>
+                                <td><input v-model="bookinfo.book_name" type="text" lay-verify="pass" autocomplete="off"
+                                        class="layui-input"></td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>价格</td>
+                                <td><input v-model="bookinfo.book_price" type="text" lay-verify="pass"
+                                        autocomplete="off" class="layui-input"></td>
+                            </tr>
+                            <tr>
+                                <td>详情</td>
+                                <td><input v-model="bookinfo.book_detail" type="text" lay-verify="pass"
+                                        autocomplete="off" class="layui-input"></td>
+                            </tr>
+                            <tr>
+                                <td>数量</td>
+                                <td><input v-model="bookinfo.book_count" type="text" lay-verify="pass"
+                                        autocomplete="off" class="layui-input"></td>
+                            </tr>
+                            <tr>
+                                <td>作者</td>
+                                <td><input v-model="bookinfo.book_author" type="text" lay-verify="pass"
+                                        autocomplete="off" class="layui-input"></td>
+                            </tr>
+                            <tr>
+                                <td>类别</td>
+                                <td>
+                                    <form class="layui-form layui-form-pane">
+                                        <div class="layui-form-item">
+                                            <label class="layui-form-label">请选择类别</label>
+                                            <div class="layui-input-block">
+                                                <select name="interest" lay-filter="aihao">
+                                                    <option value="" selected></option>
+                                                    <option v-for="(item,index) in book_type" :value="item.id">
+                                                        {{item.name}}</option>
+                                                </select>
+                                                <div class="layui-unselect layui-form-select">
+                                                    <div class="layui-select-title">
+                                                        <input type="text" placeholder="请选择" value="阅读" readonly=""
+                                                            class="layui-input layui-unselect">
+                                                        <i class="layui-edge">
+                                                        </i>
+                                                    </div>
+                                                    <dl class="layui-anim layui-anim-upbit">
+                                                        <dd class='layui-this' value=''>
+                                                        </dd>
+                                                        <dd v-for="(item,index) in book_type" :lay-value="item.id">
+                                                            {{item.name}}
+                                                        </dd>
+                                                    </dl>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>封面</td>
+                                <td>
+                                    <img style="height: 300px;max-height: 100%;max-width: 100%;"
+                                        v-for="(item,index) in book_img" :src="item">
+                                    <div class="weui-uploader__input-box">
+                                        <input @change='sendBookImg($event)' id="uploaderInput"
+                                            class="weui-uploader__input" type="file" accept="image/*" multiple="">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>详情</td>
+                                <td>
+                                    <img style="height: 300px;max-height: 100%;max-width: 100%;"
+                                        v-for="(item,index) in detail_img" :src="item">
+                                    <div class="weui-uploader__input-box">
+                                        <input @change='sendBookDetail($event)' id="uploaderInput"
+                                            class="weui-uploader__input" type="file" accept="image/*" multiple="">
+                                    </div>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+
+
+                    <button @click='updateBook' class="layui-btn" lay-submit="" lay-filter="demo1">确定</button>
+                    <button @click='cancel' class="layui-btn" lay-submit="" lay-filter="demo1">取消</button>
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+        <!-- 右侧主体结束 -->
+    </div>
+    <!-- 中部结束 -->
+    <script>
+        let vm = new Vue({
+            el: '#app',
+            data: {
+                book_type: [{
+                        'id': '0',
+                        'name': '全部',
+                    },
+                    {
+                        'id': '1',
+                        'name': '计算机',
+                    },
+                    {
+                        'id': '2',
+                        'name': '科学',
+                    },
+                    {
+                        'id': '3',
+                        'name': '经济',
+                    },
+                    {
+                        'id': '4',
+                        'name': '军事',
+                    },
+                    {
+                        'id': '5',
+                        'name': '哲学',
+                    },
+                    {
+                        'id': '6',
+                        'name': '数学',
+                    },
+                    {
+                        'id': '7',
+                        'name': '航空',
+                    },
+                    {
+                        'id': '8',
+                        'name': '文学',
+                    },
+                    {
+                        'id': '9',
+                        'name': '艺术',
+                    },
+                    {
+                        'id': '10',
+                        'name': '语言',
+                    },
+                ],
+                query_book_id: null,
+                bookinfo: {
+                    book_name: '',
+                    book_price: '',
+                    book_detail: '',
+                    book_img: '',
+                    book_type_id: '',
+                    book_count: '',
+                    book_author: '',
+                    shop_id: '1',
+                    detail_img: '',
+                },
+
+            },
+            mounted() {
+                book_id = getQueryString('book_id');
+                if (!book_id) {
+                    return;
+                }
+            },
+            computed: {
+                book_img: function () {
+                    return this.bookinfo.book_img.split(';');
+                },
+                detail_img: function () {
+                    return this.bookinfo.detail_img.split(';');
+                }
+            },
+            methods: {
+
+                sendBookImg(event) {
+                    this.upload(event, function (res, _this) {
+                        _this.bookinfo.book_img += res.data + ';';
+                    })
+                },
+                sendBookDetail(event) {
+                    this.upload(event, function (res, _this) {
+
+                        _this.bookinfo.detail_img += res.data + ';';
+                    })
+                },
+                upload(event, callback) {
+                    let _this = this;
+                    imgFile = event.target.files[0];
+                    var formdata = new FormData();
+                    formdata.append('img', imgFile);
+
+                    $.ajax({
+                        type: 'POST',
+                        url: 'http://admin.wyxs.talesrunner.org/book/upload',
+                        data: formdata,
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        success: function (res) {
+                            if (res.code == 200) {
+                                event.target.files[0] = null;
+                                callback(res, _this);
+                            } else if (response.code == 403) {
+                                alert(response.msg);
+                                location.href =
+                                    'http://admin.wyxs.talesrunner.org/static/admin/index.html';
+                            } else {
+                                alert(res.msg);
+                            }
+                        },
+                        error: function (jqXHR) {
+                            alert('图片上传失败');
+                        }
+
+                    })
+                },
+
+
+                cancel: function () {
+                    location.href = "http://admin.wyxs.talesrunner.org/static/admin/book-list.html";
+                },
+                updateBook: function () {
+                    let _this = this;
+                    // console.log(this.bookinfo);
+                    _this.bookinfo.book_type_id = $('.layui-form dd.layui-this');
+                    let selectedOption = $('.layui-form dd.layui-this')
+                    if (selectedOption.length == 0) {
+                        alert('请选择书本类型');
+                    }
+                    _this.bookinfo.book_type_id = selectedOption[0].getAttribute('lay-value');
+
+                    let len1 = _this.bookinfo.book_img.length;
+                    if (len1 > 0) {
+                        _this.bookinfo.book_img = _this.bookinfo.book_img.slice(0, len1 - 1);
+                    }
+                    let len2 = _this.bookinfo.detail_img.length;
+                    if (len2 > 0) {
+                        _this.bookinfo.detail_img = _this.bookinfo.detail_img.slice(0, len2 - 1);
+                    }
+                    debugger;
+                    $.ajax({
+                        type: "POST",
+                        url: "http://admin.wyxs.talesrunner.org/admin/addBook",
+                        data: _this.bookinfo,
+                        success: function (response) {
+                            if (response.code == 200) {
+                                alert("新增成功");
+                            } else if (response.code == 403) {
+                                alert(response.msg);
+                                location.href =
+                                    'http://admin.wyxs.talesrunner.org/static/admin/index.html';
+                            } else {
+                                alert("新增失败");
+                            }
+                            location.href =
+                                'http://admin.wyxs.talesrunner.org/static/admin/book-list.html';
+                        }
+                    });
+                },
+
+            },
+        });
+
+
+        function logOut() {
+            $.ajax({
+                type: "GET",
+                url: "http://admin.wyxs.talesrunner.org/admin/logOut",
+                success: function (response) {
+                    if (response.code == 200) {
+                        location.href = './login.html';
+                    } else {
+                        alert("慢点爬");
+                    }
+                }
+            });
+        }
+
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+    </script>
+</body>
+
+</html>
