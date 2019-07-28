@@ -51,4 +51,16 @@ class User extends Controller
     {
         return $this->User->userFind($id);
     }
+
+     /**
+     * 用于用户上传头像
+     *
+     * @param Request $request
+     * @return json 上传结果
+     */
+    public function headImg(Request $request)
+    { 
+        return $this->User->headImg($request);
+    }
+
 }

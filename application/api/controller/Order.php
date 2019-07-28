@@ -89,4 +89,17 @@ class Order extends Controller
     {
         return $this->Order->orderCancel($request);
     }
+
+    /**
+     * 根据状态id，分页查询用户订单
+     *
+     * @param String $user_id
+     * @param String $state_id
+     * @return json 订单信息
+     */
+    public function myOrderByPage($user_id, $state_id = 'all',$limit,$page)
+    {
+        $model = new ViewMyOrder();
+        return $model->myOrderByPage($user_id, $state_id,$limit,$page);
+    }
 }

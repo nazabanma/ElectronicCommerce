@@ -59,6 +59,7 @@ return [
         'userInfo/:user_id'          => ['api/user/userInfo',           ['method' => 'GET']],
         'userAdd'                    => ['api/user/userAdd',            ['method' => 'POST']],
         'userFind'                   => ['api/user/userFind',           ['method' => 'POST']],
+        'headImg'                    => ['api/user/headImg',            ['method' => 'POST']],
     ],
 
     '[address]' =>
@@ -125,6 +126,7 @@ return [
         'orderDelete'               => ['api/order/orderDelete',        ['method' => 'POST']],
         'orderStateUpdate'          => ['api/order/orderStateUpdate',   ['method' => 'POST']],
         'order'                     => ['api/order/myOrder',            ['method' => 'POST']],
+        'myOrderByPage'             => ['api/order/myOrderByPage',      ['method' => 'POST']],
 
     ]
 

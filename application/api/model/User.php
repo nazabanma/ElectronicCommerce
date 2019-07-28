@@ -100,4 +100,50 @@ class User extends Model
             'data'  => $result
         ]);
     }
+
+     /**
+     * 用于用户上传头像
+     *
+     * @param Request $request
+     * @return json 上传结果
+     */
+    public function headImg(Request $request)
+    {
+        $user_id = $request->param('user_id');  //用户id
+        $file = $request->file('file');
+        if ($file) {
+            $baseUrl = ROOT_PATH . 'public' . DS . 'upload';
+            $info = $file->move($baseUrl);
+            if ($info) {
+                $name = 'http://admin.wyxs.talesrunner.org/upload/' . $info->getSaveName();
+                $User = User::get($user_id);
+                $User->head_img=$name;
+                $res=$User->save();
+
+                if ($res === false) {
+                    return json([
+                        'code' => 500,
+                        'msg' => 'update failed'
+                    ]);
+                }
+                
+
+                return json([
+                    'code' => 200,
+                    'msg' => '图片上传成功',
+                    'name' => $name,
+                    'file' => $file
+                ]);
+            }
+            return json([
+                'code' => 500,
+                'msg' => '图片上传失败',
+            ]);
+        }
+        return json([
+            'code' => 500,
+            'msg' => '图片上传失败',
+        ]);
+    }
+
 }
