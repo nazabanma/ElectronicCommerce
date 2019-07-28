@@ -39,7 +39,7 @@ class User extends Model
     {
         $result = User::get($user_id);
         $result['collect'] = Collect::where('user_id', $user_id)->count();
-        $result['address'] = Address::where('user_id', $user_id)->count();
+        $result['address'] = Address::where('user_id', $user_id)->where('flag',1)->count();
 
         if (is_null($result)) {
             return json([
