@@ -139,7 +139,7 @@ class Evaluate extends Model
             }
 
             $order = Order::get($order_id);
-            $order->order_state_id = 4;
+            $order->order_state_id = 4;      //订单状态改成评价后
             $result = $order->save();
             if ($result === false) {
                 throw new Exception('update failed', 500);

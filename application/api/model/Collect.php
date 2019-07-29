@@ -28,12 +28,14 @@ class Collect extends Model
                 'msg'   => '请求参数有误'
             ]);
         $collect = new Collect();
-        $oldCollect =  $collect       //首先查询购物车是否有该物品               
+
+        //首先查询收藏夹是否有该物品     
+        $oldCollect =  $collect                 
             ->where('user_id', $user_id)
             ->where('book_id', $book_id)
             ->find();
         //如果为空，则添加
-        if (is_null($oldCollect)) {
+        if (empty($oldCollect)) {
             $collect = new Collect([
                 'user_id'       => $user_id,
                 'book_id'       => $book_id,
@@ -119,50 +121,7 @@ class Collect extends Model
         ]);
     }
 
-    /**
-     * 从购物车选择书本到收藏夹
-     *
-     * @param Request $request
-     * @return void
-     */
-    public function removeToCollect(Request $request)
-    {
-        $carts = json_decode($request->param('carts'), true);   //用户选择的所有书本
-        $user_id = $request->param('user_id');
-        $oldCollect = Collect::where('user_id', $user_id)->column('book_id');
-
-        if (empty($carts) || is_null($user_id)) {
-            return json([
-                'code'  => '404',
-                'msg'   => 'Necessary param is null'
-            ]);
-        }
-
-        try {
-            Db::startTrans();
-            foreach ($carts as $item) {
-
-                if (\in_array($item, $oldCollect)) {
-                    continue;
-                }
-
-                $this->createCollectItem($item, $user_id);
-            }
-
-            Db::commit();
-        } catch (Exception $th) {
-            Db::rollback();
-            return json([
-                'code'  => $th->getCode(),
-                'msg'   => $th->getMessage()
-            ]);
-        }
-        return json([
-            "statusCode"    => 200,
-            "msg"           => "加入收藏夹成功",
-        ]);
-    }
-
+    
 
     /**
      * 从收藏夹选择书本到购物车
@@ -174,7 +133,7 @@ class Collect extends Model
     {
         $collects = json_decode($request->param('collects'), true);   //用户选择的所有书本
         $user_id = $request->param('user_id');
-        $oldCart = ShopCart::where('user_id', $user_id)->column('book_id');
+        $oldCart = ShopCart::where('user_id', $user_id)->column('book_id'); //查询购物车已有的书本
 
         if (empty($collects) || is_null($user_id)) {
             return json([
@@ -187,11 +146,11 @@ class Collect extends Model
             Db::startTrans();
             foreach ($collects as $item) {
 
-                if (\in_array($item, $oldCart)) {
+                if (\in_array($item, $oldCart)) {   //当购物车已经存在该书本，则跳过
                     continue;
                 }
 
-                $this->createCartItem($item, $user_id);
+                $this->createCartItem($item, $user_id);  //当不存在则添加
             }
 
             Db::commit();

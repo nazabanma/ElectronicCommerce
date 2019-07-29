@@ -7,7 +7,7 @@ use think\Model;
 
 class ViewBookList extends Model
 {
-    protected $limit = 10;
+    protected $limit = 10;  //分页每页数量
     /**
      * 根据type_id返回书本信息列表(0表示返回全部,其余则根据type_id返回)
      *
@@ -59,7 +59,8 @@ class ViewBookList extends Model
     /**
      * 根据页码查询
      *
-     * @param Request $request
+     * @param String $page
+     * @param String $type_id
      * @return json 书本数组
      */
     public function bookListByPage($page, $type_id)

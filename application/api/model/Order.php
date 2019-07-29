@@ -46,7 +46,7 @@ class Order extends Model
                 throw new Exception("order failed", 500);
             }
             $order_id = $order->order_id;
-            $this->updateBookCount($orderList, -1);
+            $this->updateBookCount($orderList, -1);   //更新书本数量
             foreach ($orderList as $item) {
                 $this->createOrderItem($item, $order_id);
             }
@@ -65,6 +65,13 @@ class Order extends Model
         ]);
     }
 
+
+    /**
+     * 更新书本
+     * @param Array $orderList 订单项集合
+     * @param String $sign 加减的记号
+     * @return 更新结果
+     */
     protected function updateBookCount($orderList, $sign)
     {
         if (empty($orderList)) {
@@ -124,7 +131,7 @@ class Order extends Model
         $order_id = $request->param()['order_id'];                   //订单id
         $address_id = $request->param()['address_id'];         //用户修改的地址id
 
-        if (is_null($address_id)) {
+        if (is_null($address_id)||is_null($order_id)) {
             return json([
                 'code'  => '404',
                 'msg'   => 'Necessary param is null'

@@ -34,98 +34,6 @@ class ViewMyOrder extends Model
         if (empty($orderList)) {
             return json([
                 'code' => '404',
-                'msg' =>   "无评价",
-            ]);
-        }
-
-        // 返回结果
-        $data = [];
-        // 订单项数组
-        $item = [];
-        $prev = -1;
-        foreach ($orderList as $orderItem) {
-            $temp = [
-                'order_id'          => $orderItem['order_id'],
-                'time'              => $orderItem['create_time'],
-                'order_state_id'    => $orderItem['order_state_id'],
-                'order_item_id'     => $orderItem['order_item_id'],
-                'book_id'           => $orderItem['book_id'],
-                'book_name'         => $orderItem['book_name'],
-                'book_author'       => $orderItem['book_author'],
-                'book_img'          => $orderItem['book_cover'],
-                'price'             => $orderItem['price'],
-                'count'             => $orderItem['count'],
-                'user_id'           => $orderItem['user_id'],
-                'flag'              => $orderItem['flag'],
-                'address_id'        => $orderItem['address_id'],
-
-            ];
-            if ($prev > 0 && $prev != $orderItem['order_id']) {
-                array_push($data, $this->getOrderItem($item));
-                $item = [];
-            }
-            //相当于array_push
-            $item[] = $temp;
-            $prev = $orderItem['order_id'];
-        }
-        array_push($data, $this->getOrderItem($item));
-        return json([
-            'code' => '200',
-            'data' => $data,
-        ]);
-    }
-
-    /**
-     * 根据状态id，分页查询用户订单
-     *
-     * @param String $user_id
-     * @param String $state_id
-     * @return json 订单信息
-     */
-    public function myOrderByPage($user_id, $state_id = 'all',$limit,$page)
-    {
-        if (is_null($user_id||is_null($limit))||is_null($page)) {
-            return json([
-                'code' => '404',
-                'msg' => 'user_id is null'
-            ]);
-        }
-
-        $Order = new ViewMyOrder();
-
-        $orderList = [];
-        $pageCount = 0;
-
-        if ($state_id == 'all') {
-            $pageCount = ceil($Order->count() /$limit);
-            $orderList = $Order
-                        ->where('user_id', $user_id)
-                        ->where('flag', '0')
-                        ->limit($limit)
-                        ->page($page)
-                        ->select();
-        } else {
-            $Order = $Order
-                    ->where('user_id', $user_id)
-                    ->where('flag', '0')
-                    ->where('order_state_id', $state_id);
-
-            $pageCount = ceil($Order->count()/$limit);
-
-            $orderList = $Order
-                        ->where('user_id', $user_id)
-                        ->where('flag', '0')
-                        ->where('order_state_id', $state_id)
-                        ->limit($limit)
-                        ->page($page)
-                        ->select();
-        }
-
-        
-
-        if (empty($orderList)) {
-            return json([
-                'code' => '404',
                 'msg' =>   "无订单",
             ]);
         }
@@ -136,8 +44,6 @@ class ViewMyOrder extends Model
         $item = [];
         $prev = -1;
         foreach ($orderList as $orderItem) {
-            
-
             $temp = [
                 'order_id'          => $orderItem['order_id'],
                 'time'              => $orderItem['create_time'],
@@ -166,10 +72,10 @@ class ViewMyOrder extends Model
         return json([
             'code' => '200',
             'data' => $data,
-            'pageCount' => $pageCount
         ]);
     }
 
+    
     /**
      * 获得一个订单的物品
      *

@@ -41,7 +41,7 @@ class User extends Model
         $result['collect'] = Collect::where('user_id', $user_id)->count();
         $result['address'] = Address::where('user_id', $user_id)->where('flag',1)->count();
 
-        if (is_null($result)) {
+        if (empty($result)) {
             return json([
                 'code'  => '404',
                 'msg'   => 'user  is null'

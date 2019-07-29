@@ -16,7 +16,7 @@ class ViewBookDetail extends Model
      */
     public function bookDetail($book_id,$user_id)
     {
-        if (is_null($book_id)) {
+        if (is_null($book_id)||is_null($user_id)) {
             return json([
                 'code' => 404,
                 'msg' => 'Necessary param is null'

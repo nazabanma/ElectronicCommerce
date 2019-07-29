@@ -27,16 +27,19 @@ class EvaluateLike extends Model
         }
 
         $like = new evaluateLike();
-        $oldLike =  $like       //首先查询购物车是否有该物品               
+
+         //首先查询购物车是否有该物品  
+        $oldLike =  $like                   
                     ->where('user_id', $user_id)
                     ->where('evaluate_id', $evaluate_id)
                     ->find();
+                    
         //如果为空，则添加
-        if (is_null($oldLike)) {
+        if (empty($oldLike)) {
             $like = new evaluateLike([
                 'user_id'       => $user_id,
-                'evaluate_id'       => $evaluate_id,
-                'like_time'   => date("Y-m-d H:i:s"),
+                'evaluate_id'   => $evaluate_id,
+                'like_time'     => date("Y-m-d H:i:s"),
             ]);
             $result = $like->save();
             if ($result === false) {

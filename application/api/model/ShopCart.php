@@ -27,13 +27,14 @@ class ShopCart extends Model
             ]);
         }
         $shopCart = new ShopCart();
-        $oldCart =  $shopCart       //首先查询购物车是否有该物品               
+         //首先查询购物车是否有该物品    
+        $oldCart =  $shopCart                 
             ->where('user_id', $user_id)
             ->where('book_id', $book_id)
             ->find();
         $result = '';
         //如果是空的，则直接添加到购物车
-        if (is_null($oldCart)) {
+        if (empty($oldCart)) {
             $cart = new ShopCart([
                 'user_id'       => $user_id,
                 'book_id'       => $book_id,
@@ -83,9 +84,9 @@ class ShopCart extends Model
 
 
     /**
-     * 删除购物车的物品
+     * 删除购物车所有物品
      *
-     * @param Request $request
+     * @param String $user_id
      * @return void
      */
     public function cartDeleteAll($user_id)
@@ -129,7 +130,7 @@ class ShopCart extends Model
 
         $oldCart = ShopCart::get($cart_id);
         //如果是空的
-        if (is_null($oldCart)) {
+        if (empty($oldCart)) {
             return json([
                 'code'  => 401,
                 'msg'   => '不存在该物品'
@@ -160,7 +161,7 @@ class ShopCart extends Model
     {
         $carts = json_decode($request->param('carts'), true);   //用户选择的所有书本
         $user_id = $request->param('user_id');
-        $oldCollect = Collect::where('user_id', $user_id)->column('book_id');
+        $oldCollect = Collect::where('user_id', $user_id)->column('book_id'); //查询收藏夹的书本
 
         if (empty($carts) || is_null($user_id)) {
             return json([
@@ -173,7 +174,7 @@ class ShopCart extends Model
             Db::startTrans();
             foreach ($carts as $item) {
 
-                if (\in_array($item, $oldCollect)) {
+                if (\in_array($item, $oldCollect)) {   //如果存在收藏夹，则跳过
                     continue;
                 }
 
@@ -196,7 +197,7 @@ class ShopCart extends Model
 
     /**
      * 
-     * //创建收藏夹
+     * //创建收藏夹物品
      * @param String $item
      * @param String $user_id
      * @return void
