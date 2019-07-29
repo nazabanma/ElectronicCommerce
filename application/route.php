@@ -126,8 +126,6 @@ return [
         'orderDelete'               => ['api/order/orderDelete',        ['method' => 'POST']],
         'orderStateUpdate'          => ['api/order/orderStateUpdate',   ['method' => 'POST']],
         'order'                     => ['api/order/myOrder',            ['method' => 'POST']],
-        'myOrderByPage'             => ['api/order/myOrderByPage',      ['method' => 'POST']],
-
     ]
 
 ];
